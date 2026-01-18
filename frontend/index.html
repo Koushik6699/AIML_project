@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PathFinder | Job Probability AI</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="light-mode">
+
+    <nav class="navbar">
+        <div class="logo">Path<span>Finder</span></div>
+        <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">🌙</button>
+    </nav>
+
+    <main id="app-container">
+        <section class="hero">
+            <h1>Predict Your <span class="gradient-text">Job Probability</span></h1>
+        </section>
+
+        <section id="assessment" class="assessment-section">
+            <div class="assessment-container">
+                <div id="step-1">
+                    <div class="section-header">
+                        <span class="step-num">01</span>
+                        <h2>Select Mastered Subjects</h2>
+                    </div>
+                    <div class="checkbox-grid" id="subject-grid">
+                        </div>
+                    <button type="button" class="btn-primary large-btn" onclick="goToStep2()">Next: Enter Marks</button>
+                </div>
+
+                <div id="step-2" style="display:none;">
+                    <div class="section-header">
+                        <span class="step-num">02</span>
+                        <h2>Enter Your Marks (0-100)</h2>
+                    </div>
+                    <div id="marks-container"></div>
+                    <div class="flex-btns">
+                        <button class="btn-secondary" onclick="backToStep1()">Back</button>
+                        <button class="btn-primary" onclick="calculateJobProbability()">Analyze Probability</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="resultsPage" class="page">
+            <div class="results-header">
+                <h2>Your Career Match Analysis</h2>
+                <p>Calculated using weighted subject mastery and academic scores.</p>
+            </div>
+            <div id="resultsContainer" class="results-grid"></div>
+            <div class="center-btn">
+                <button class="btn-secondary" onclick="location.reload()">Start New Analysis</button>
+            </div>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>

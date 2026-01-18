@@ -1,0 +1,55 @@
+{
+  "careers": [
+    {
+      "id": "software_dev",
+      "title": "Software Developer",
+      "description": "Building core systems and applications using logic and high-level languages.",
+      "subject_weights": [
+        {"name": "DSA", "weight": 10},
+        {"name": "OOP", "weight": 9},
+        {"name": "C++", "weight": 8},
+        {"name": "Java", "weight": 8},
+        {"name": "SQL", "weight": 6},
+        {"name": "Software Engineering", "weight": 7}
+      ]
+    },
+    {
+      "id": "ml_engineer",
+      "title": "Machine Learning Engineer",
+      "description": "Training intelligent models and working with complex data patterns.",
+      "subject_weights": [
+        {"name": "ML", "weight": 10},
+        {"name": "AIML Advanced", "weight": 10},
+        {"name": "Python", "weight": 9},
+        {"name": "Linear Algebra", "weight": 8},
+        {"name": "Probability", "weight": 8},
+        {"name": "DL", "weight": 9}
+      ]
+    },
+    {
+      "id": "data_scientist",
+      "title": "Data Scientist",
+      "description": "Interpreting complex data to help organizations make decisions.",
+      "subject_weights": [
+        {"name": "Stats", "weight": 10},
+        {"name": "Probability", "weight": 9},
+        {"name": "Python", "weight": 8},
+        {"name": "SQL", "weight": 7},
+        {"name": "ML", "weight": 8},
+        {"name": "DS", "weight": 9}
+      ]
+    },
+    {
+      "id": "web_dev",
+      "title": "Full Stack Developer",
+      "description": "Creating modern web interfaces and scalable backend services.",
+      "subject_weights": [
+        {"name": "Node.js", "weight": 10},
+        {"name": "SQL", "weight": 8},
+        {"name": "OOP", "weight": 6},
+        {"name": "DBMS", "weight": 7},
+        {"name": "DSA", "weight": 5}
+      ]
+    }
+  ]
+}
