@@ -68,7 +68,7 @@ async function calculateJobProbability() {
     document.getElementById('resultsPage').style.display = 'block';
 
     try {
-        const response = await fetch('http://127.0.0.1:5000/predict', {
+        const response = await fetch('https://aiml-project-swqs.onrender.com/predict', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ 
@@ -122,7 +122,7 @@ async function generateRoadmap(role, prob, containerId) {
     btn.disabled = true;
 
     try {
-        const response = await fetch('http://192.168.1.15:5000/chat', { // Assuming this is your Gemini route
+        const response = await fetch('https://aiml-project-swqs.onrender.com/chat', { // Assuming this is your Gemini route
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ 
