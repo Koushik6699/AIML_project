@@ -122,7 +122,7 @@ async function generateRoadmap(role, prob, containerId) {
     btn.disabled = true;
 
     try {
-        const response = await fetch('http://10.22.86.9:5000/chat', { // Assuming this is your Gemini route
+        const response = await fetch('http://192.168.1.15:5000/chat', { // Assuming this is your Gemini route
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ 
