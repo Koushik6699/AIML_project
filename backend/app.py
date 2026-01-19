@@ -1,11 +1,55 @@
+import os
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+import google.generativeai as genai
+from dotenv import load_dotenv
+
 import numpy as np
 from sklearn.linear_model import LinearRegression
 from sklearn.neighbors import KNeighborsClassifier
 
+# Load environment variables
+load_dotenv()
+
 app = Flask(__name__)
 CORS(app)
+
+# ===================== GEMINI SETUP (UNCHANGED LOGIC) =====================
+
+API_KEY = os.getenv("GEMINI_API_KEY")
+if not API_KEY:
+    raise RuntimeError("GEMINI_API_KEY is missing from your environment variables.")
+
+genai.configure(api_key=API_KEY)
+print("✅ Gemini API successfully configured")
+
+model = genai.GenerativeModel("gemini-2.5-flash")
+
+@app.route("/", methods=["GET"])
+def home():
+    return jsonify({"status": "online", "message": "PathFinder AI Backend is running"}), 200
+
+@app.route("/chat", methods=["POST"])
+def chat():
+    try:
+        data = request.get_json(force=True)
+        user_prompt = data.get("prompt") or data.get("message")
+
+        if not user_prompt or not str(user_prompt).strip():
+            return jsonify({"error": "No prompt provided. Please send a 'prompt' key in your JSON body."}), 400
+
+        response = model.generate_content(user_prompt)
+
+        return jsonify({
+            "advice": response.text,
+            "reply": response.text
+        }), 200
+
+    except Exception as e:
+        print(f"❌ Gemini Error: {str(e)}")
+        return jsonify({"error": "The AI is temporarily unavailable. Please try again later."}), 500
+
+# ===================== ML SETUP (UNCHANGED LOGIC) =====================
 
 # ML Training Data [DSA, ML, DBMS, Python, Stats]
 X_train = np.array([
@@ -17,7 +61,6 @@ X_train = np.array([
 y_prob = np.array([92, 94, 65, 68, 10, 45, 98, 85])
 y_class = np.array([0, 1, 0, 1, 0, 0, 0, 1])
 
-# Initialize and fit models
 lr_model = LinearRegression().fit(X_train, y_prob)
 knn_model = KNeighborsClassifier(n_neighbors=3).fit(X_train, y_class)
 
@@ -25,22 +68,25 @@ knn_model = KNeighborsClassifier(n_neighbors=3).fit(X_train, y_class)
 def predict():
     data = request.json
     marks = np.array(data['marks']).reshape(1, -1)
-    all_marks = data.get('all_marks', {}) # Use the full dictionary of marks from JS
-    
-    # Base probability from the 5 core features
+    all_marks = data.get('all_marks', {})
+
     base_prob = lr_model.predict(marks)[0]
-    
-    # 1. Software Developer: Focuses on DSA and DBMS
-    dev_weight = (all_marks.get('DSA', 0) * 0.5 + all_marks.get('DBMS', 0) * 0.3 + all_marks.get('OOP', 0) * 0.2)
-    
-    # 2. Data Scientist: Focuses on ML and Stats
-    ds_weight = (all_marks.get('ML', 0) * 0.5 + all_marks.get('Stats', 0) * 0.3 + all_marks.get('Python', 0) * 0.2)
 
-    # 3. UI/UX Designer: High priority for HTML/CSS
-    ui_weight = (all_marks.get('HTML', 0) * 0.45 + all_marks.get('CSS', 0) * 0.45 + all_marks.get('OOP', 0) * 0.1)
+    dev_weight = (all_marks.get('DSA', 0) * 0.5 +
+                  all_marks.get('DBMS', 0) * 0.3 +
+                  all_marks.get('OOP', 0) * 0.2)
 
-    # 4. Full Stack Developer: Mix of Web and Logic
-    fs_weight = (all_marks.get('Node.js', 0) * 0.4 + all_marks.get('HTML', 0) * 0.3 + all_marks.get('CSS', 0) * 0.3)
+    ds_weight = (all_marks.get('ML', 0) * 0.5 +
+                 all_marks.get('Stats', 0) * 0.3 +
+                 all_marks.get('Python', 0) * 0.2)
+
+    ui_weight = (all_marks.get('HTML', 0) * 0.45 +
+                 all_marks.get('CSS', 0) * 0.45 +
+                 all_marks.get('OOP', 0) * 0.1)
+
+    fs_weight = (all_marks.get('Node.js', 0) * 0.4 +
+                 all_marks.get('HTML', 0) * 0.3 +
+                 all_marks.get('CSS', 0) * 0.3)
 
     results = [
         {
@@ -55,7 +101,7 @@ def predict():
         },
         {
             "role": "UI/UX Designer",
-            "prob": round(max(5, min(99, (ui_weight))), 2), # Prioritizing web marks here
+            "prob": round(max(5, min(99, (ui_weight))), 2),
             "algo": "Heuristic: Visual Design Match"
         },
         {
@@ -65,11 +111,13 @@ def predict():
         }
     ]
 
-    # Filter out low matches and sort by highest
     results = [r for r in results if r['prob'] > 20]
     results.sort(key=lambda x: x['prob'], reverse=True)
-    
+
     return jsonify(results)
 
-if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+# ===================== RUN SERVER =====================
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port, debug=True)
