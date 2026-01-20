@@ -22,7 +22,7 @@ if not API_KEY:
     raise RuntimeError("GEMINI_API_KEY is missing from your environment variables.")
 
 genai.configure(api_key=API_KEY)
-print("✅ Gemini API successfully configured")
+print("Gemini API successfully configured")
 
 model = genai.GenerativeModel("gemini-2.5-flash")
 
