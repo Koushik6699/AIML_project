@@ -3,58 +3,123 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PathFinder | Job Probability AI</title>
+    <title>PathFinder AI | Career Precision Tool</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
 <body class="light-mode">
 
-    <nav class="navbar">
-        <div class="logo">Path<span>Finder</span></div>
-        <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">🌙</button>
-    </nav>
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">Path<span>Finder</span></div>
+        </div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li class="active" onclick="showSection('hero')">🏠 Dashboard</li>
+                <li onclick="showSection('assessment')">🎯 Analyze Skills</li>
+                <li>📊 Market Trends</li>
+                <li>👤 Profile</li>
+            </ul>
+        </nav>
+        <div class="sidebar-footer">
+            <button class="theme-toggle-btn" onclick="toggleTheme()" id="themeBtn">
+                <span class="icon">🌙</span> Dark Mode
+            </button>
+        </div>
+    </aside>
 
-    <main id="app-container">
-        <section class="hero">
-            <h1>Predict Your <span class="gradient-text">Job Probability</span></h1>
+    <main class="main-content">
+        
+        <section id="hero" class="content-section">
+            <div class="hero-card">
+                <div class="hero-text">
+                    <h1>Predict Your <span class="gradient-text">Future Career</span></h1>
+                    <p>PathFinder uses AI-driven analysis to map your academic strengths to industry-specific roles across CSE, ECE, and Mechanical Engineering.</p>
+                    <button class="btn-primary" onclick="startAssessment()">Get Started</button>
+                </div>
+                <div class="hero-visual">
+                    <div class="floating-icons">✨ 🚀 🧬</div>
+                </div>
+            </div>
         </section>
 
-        <section id="assessment" class="assessment-section">
-            <div class="assessment-container">
-                <div id="step-1">
-                    <div class="section-header">
-                        <span class="step-num">01</span>
-                        <h2>Select Mastered Subjects</h2>
-                    </div>
-                    <div class="checkbox-grid" id="subject-grid">
-                        </div>
-                    <button type="button" class="btn-primary large-btn" onclick="goToStep2()">Next: Enter Marks</button>
+        <section id="assessment" class="content-section" style="display:none;">
+            <div class="container-header">
+                <h2>Skill Assessment</h2>
+                <p>Complete the steps below to see your job probability scores.</p>
+            </div>
+
+            <div class="assessment-card">
+                <div class="stepper">
+                    <div class="step active" id="step-dot-1">1<span>Branch</span></div>
+                    <div class="step" id="step-dot-2">2<span>Skills</span></div>
+                    <div class="step" id="step-dot-3">3<span>Score</span></div>
                 </div>
 
-                <div id="step-2" style="display:none;">
-                    <div class="section-header">
-                        <span class="step-num">02</span>
-                        <h2>Enter Your Marks (0-100)</h2>
+                <div id="step-1" class="step-content">
+                    <h3>Choose Your Department</h3>
+                    <div class="branch-grid">
+                        <div class="branch-card" onclick="selectBranch('CSE')">
+                            <div class="branch-icon">💻</div>
+                            <h4>CSE / AI-ML</h4>
+                            <p>Software, AI, Web & Data</p>
+                        </div>
+                        <div class="branch-card" onclick="selectBranch('ECE')">
+                            <div class="branch-icon">📡</div>
+                            <h4>Electrical / ECE</h4>
+                            <p>VLSI, IoT & Communication</p>
+                        </div>
+                        <div class="branch-card" onclick="selectBranch('MECH')">
+                            <div class="branch-icon">⚙️</div>
+                            <h4>Mechanical</h4>
+                            <p>Robotics, CAD & Thermal</p>
+                        </div>
                     </div>
+                </div>
+
+                <div id="step-2" class="step-content" style="display:none;">
+                    <h3>Select Mastered Subjects</h3>
+                    <p id="selected-branch-label" class="badge">Branch: None</p>
+                    <div class="checkbox-grid" id="subject-grid">
+                        </div>
+                    <div class="flex-btns">
+                        <button class="btn-secondary" onclick="prevStep(1)">Back</button>
+                        <button class="btn-primary" onclick="goToStep3()">Next: Enter Marks</button>
+                    </div>
+                </div>
+
+                <div id="step-3" class="step-content" style="display:none;">
+                    <h3>Academic Performance</h3>
                     <div id="marks-container"></div>
                     <div class="flex-btns">
-                        <button class="btn-secondary" onclick="backToStep1()">Back</button>
+                        <button class="btn-secondary" onclick="prevStep(2)">Back</button>
                         <button class="btn-primary" onclick="calculateJobProbability()">Analyze Probability</button>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section id="resultsPage" class="page">
-            <div class="results-header">
-                <h2>Your Career Match Analysis</h2>
-                <p>Calculated using weighted subject mastery and academic scores.</p>
+        <section id="resultsPage" class="content-section" style="display:none;">
+            <div class="container-header">
+                <h2>Your Career Matches</h2>
+                <p>Based on your mastered skills and academic weightage.</p>
             </div>
             <div id="resultsContainer" class="results-grid"></div>
             <div class="center-btn">
                 <button class="btn-secondary" onclick="location.reload()">Start New Analysis</button>
             </div>
         </section>
+
+        <footer class="footer">
+            <div class="footer-content">
+                <p>© 2026 PathFinder AI | Engineering Career Roadmap</p>
+                <div class="footer-links">
+                    <a href="#">Privacy</a>
+                    <a href="#">Terms</a>
+                    <a href="#">Support</a>
+                </div>
+            </div>
+        </footer>
     </main>
 
     <script src="script.js"></script>

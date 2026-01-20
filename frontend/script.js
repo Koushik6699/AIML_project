@@ -1,58 +1,120 @@
 /**
- * PathFinder | Multi-Model ML Integration with Gemini AI Roadmap
+ * PathFinder | Multi-Branch AI Integration
  */
 
-const ALL_SUBJECTS = [
-    "DSA", "ML", "DL", "Linear Algebra", "DBMS", "DS", "OOP", 
-    "Stats", "C", "C++", "Java", "Python", "SQL", "Node.js", 
-    "AIML Basics", "AIML Advanced", "HTML", "CSS"
-];
+// 1. Extended Subject Database
+const BRANCH_DATA = {
+    "CSE": [
+        "DSA", "ML", "DL", "DBMS", "DS", "OOP", "Stats", "C", "C++", 
+        "Java", "Python", "SQL", "Node.js", "AIML Advanced", "HTML", 
+        "CSS", "Cloud Computing", "Cyber Security"
+    ],
+    "ECE": [
+        "VLSI Design", "Embedded Systems", "Signal Processing", 
+        "Microprocessors", "Digital Electronics", "Control Systems", 
+        "Circuit Theory", "IoT", "Antenna Theory", "Communication Systems",
+        "Analog Circuits", "Fiber Optics"
+    ],
+    "MECH": [
+        "Thermodynamics", "Fluid Mechanics", "CAD/CAM", "Robotics", 
+        "Heat Transfer", "Manufacturing Process", "Mechatronics", 
+        "Automobile Engineering", "Solid Mechanics", "Industrial Engineering",
+        "Refrigeration", "Kinematics"
+    ]
+};
 
+// Features the ML model expects for the generic prediction (mapping to your backend)
 const ML_FEATURES = ["DSA", "ML", "DBMS", "Python", "Stats"];
+
+let currentBranch = "";
 let selectedSubjects = [];
 
-function init() {
+/** --- Navigation Logic --- **/
+
+function showSection(sectionId) {
+    // Hide all sections
+    document.querySelectorAll('.content-section').forEach(sec => sec.style.display = 'none');
+    // Show target
+    document.getElementById(sectionId).style.display = 'block';
+    
+    // Update Sidebar Active State
+    document.querySelectorAll('.sidebar-nav li').forEach(li => li.classList.remove('active'));
+    // (Logic to match li to section would go here)
+}
+
+function startAssessment() {
+    showSection('assessment');
+    goToStep(1);
+}
+
+function goToStep(stepNum) {
+    // Hide all steps
+    document.getElementById('step-1').style.display = 'none';
+    document.getElementById('step-2').style.display = 'none';
+    document.getElementById('step-3').style.display = 'none';
+    
+    // Show current step
+    document.getElementById(`step-${stepNum}`).style.display = 'block';
+    
+    // Update Stepper UI
+    document.querySelectorAll('.step').forEach((s, idx) => {
+        if (idx + 1 <= stepNum) s.classList.add('active');
+        else s.classList.remove('active');
+    });
+}
+
+/** --- Step 1: Branch Selection --- **/
+
+function selectBranch(branch) {
+    currentBranch = branch;
+    document.getElementById('selected-branch-label').innerText = `Branch: ${branch}`;
+    
+    // Populate Subjects for this branch
     const grid = document.getElementById('subject-grid');
-    if (!grid) return;
     grid.innerHTML = "";
-    ALL_SUBJECTS.forEach(sub => {
+    
+    BRANCH_DATA[branch].forEach(sub => {
         grid.innerHTML += `
             <label class="chip">
-                <input type="checkbox" class="sub-check" value="${sub}" onchange="updateSelectionCount()">
+                <input type="checkbox" class="sub-check" value="${sub}" onchange="updateSelection()">
                 <span>${sub}</span>
             </label>
         `;
     });
+    
+    goToStep(2);
 }
 
-function updateSelectionCount() {
+function updateSelection() {
     selectedSubjects = [...document.querySelectorAll('.sub-check:checked')].map(el => el.value);
 }
 
-function goToStep2() {
+/** --- Step 2: Subject Selection --- **/
+
+function prevStep(step) {
+    goToStep(step);
+}
+
+function goToStep3() {
     if (selectedSubjects.length === 0) {
-        alert("Please select at least one subject to proceed.");
+        alert("Please select at least one subject.");
         return;
     }
+    
     const container = document.getElementById('marks-container');
     container.innerHTML = "";
     selectedSubjects.forEach(sub => {
         container.innerHTML += `
             <div class="mark-input-group">
                 <label>${sub}</label>
-                <input type="number" class="mark-val" data-sub="${sub}" placeholder="0-100" min="0" max="100">
+                <input type="number" class="mark-val" data-sub="${sub}" placeholder="0" min="0" max="100">
             </div>
         `;
     });
-    document.getElementById('step-1').style.display = 'none';
-    document.getElementById('step-2').style.display = 'block';
-    window.scrollTo({top: 0, behavior: 'smooth'});
+    goToStep(3);
 }
 
-function backToStep1() {
-    document.getElementById('step-2').style.display = 'none';
-    document.getElementById('step-1').style.display = 'block';
-}
+/** --- Step 3: Calculation & Backend Integration --- **/
 
 async function calculateJobProbability() {
     const marksData = {};
@@ -60,18 +122,20 @@ async function calculateJobProbability() {
         marksData[input.dataset.sub] = parseInt(input.value) || 0;
     });
 
+    // Preparing the feature vector for your existing backend ML model
     const featureVector = ML_FEATURES.map(feat => marksData[feat] || 0);
-    const container = document.getElementById("resultsContainer");
-    container.innerHTML = `<div class="loader">Analyzing Profile...</div>`;
     
-    document.getElementById('assessment').style.display = 'none';
-    document.getElementById('resultsPage').style.display = 'block';
+    const container = document.getElementById("resultsContainer");
+    container.innerHTML = `<div class="loader"><div class="spinner"></div> Analyzing ${currentBranch} Profile...</div>`;
+    
+    showSection('resultsPage');
 
     try {
         const response = await fetch('https://aiml-project-swqs.onrender.com/predict', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ 
+                branch: currentBranch,
                 marks: featureVector,
                 all_marks: marksData 
             })
@@ -83,58 +147,52 @@ async function calculateJobProbability() {
         results.forEach((item, index) => {
             const cardId = `roadmap-${index}`;
             container.innerHTML += `
-                <div class="career-card" style="margin-bottom: 20px;">
+                <div class="career-card">
                     <div style="display:flex; justify-content:space-between; align-items:center;">
                         <div>
-                            <h4 style="color:var(--muted); text-transform:uppercase; font-size:0.7rem; letter-spacing:1px; margin-bottom:5px;">Career Path</h4>
+                            <h4 style="color:var(--text-muted); text-transform:uppercase; font-size:0.7rem; letter-spacing:1px; margin-bottom:5px;">Target Role</h4>
                             <h3 style="margin:0;">${item.role}</h3>
                         </div>
                         <div style="text-align:right;">
-                            <h4 style="color:var(--muted); text-transform:uppercase; font-size:0.7rem; letter-spacing:1px; margin-bottom:5px;">Probability</h4>
+                            <h4 style="color:var(--text-muted); text-transform:uppercase; font-size:0.7rem; letter-spacing:1px; margin-bottom:5px;">Probability</h4>
                             <span style="font-size:1.5rem; font-weight:800; color:var(--primary);">${item.prob}%</span>
                         </div>
                     </div>
-                    <p style="font-size:0.8rem; color:var(--muted); margin: 10px 0;">${item.algo}</p>
                     <div class="prob-bar-bg">
                         <div class="prob-bar-fill" style="width: ${item.prob}%"></div>
                     </div>
                     <button class="btn-ai-roadmap" id="btn-${cardId}" onclick="generateRoadmap('${item.role}', ${item.prob}, '${cardId}')">
-                        ✨ AI Roadmap
+                        ✨ Generate AI Career Path
                     </button>
                     <div id="${cardId}" class="ai-roadmap-box" style="display:none;"></div>
                 </div>
             `;
         });
     } catch (error) {
-        container.innerHTML = `<div class="career-card"><h3>Error: Backend Connection Failed</h3></div>`;
+        container.innerHTML = `<div class="career-card"><h3>Backend Error</h3><p>Could not connect to the analysis engine.</p></div>`;
     }
 }
+
+/** --- Gemini AI Roadmap Logic --- **/
 
 async function generateRoadmap(role, prob, containerId) {
     const roadmapBox = document.getElementById(containerId);
     const btn = document.getElementById(`btn-${containerId}`);
     
-    // Construct the automatic prompt
-    const prompt = `My subjects are ${selectedSubjects.join(", ")} and the job role I got is ${role} with a ${prob}% probability percentage. Give me a short roadmap of what I have to do to improve this and get the job. Format with clear headings like 'Roadmap' and 'Projects to Build' 3 points each, using bullet points. Keep it very short and high quality.`;
+    const prompt = `I am a ${currentBranch} student. My mastered subjects are ${selectedSubjects.join(", ")}. I have a ${prob}% probability for the role of ${role}. Provide a high-impact roadmap with 3 specific technical skills to learn and 3 project ideas.`;
 
     roadmapBox.style.display = "block";
-    roadmapBox.innerHTML = `<div class="spinner"></div> Generating your smart guide...`;
+    roadmapBox.innerHTML = `<div class="spinner"></div> Mapping your path...`;
     btn.disabled = true;
 
     try {
-        const response = await fetch('https://aiml-project-swqs.onrender.com/chat', { // Assuming this is your Gemini route
+        const response = await fetch('https://aiml-project-swqs.onrender.com/chat', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ 
-                role: role, 
-                probability: prob,
-                prompt: prompt // Sending the specific constructed prompt
-            })
+            body: JSON.stringify({ prompt: prompt, role: role })
         });
 
         const data = await response.json();
-        
-        // Simple Markdown-to-HTML formatting for the AI response
         let formattedText = data.advice
             .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
             .replace(/\* /g, '• ')
@@ -142,7 +200,7 @@ async function generateRoadmap(role, prob, containerId) {
         
         roadmapBox.innerHTML = `<div class="roadmap-content">${formattedText}</div>`;
     } catch (error) {
-        roadmapBox.innerHTML = `<span style="color:red;">Failed to connect to Gemini API.</span>`;
+        roadmapBox.innerHTML = `<span style="color:red;">Failed to load roadmap.</span>`;
     } finally {
         btn.disabled = false;
     }
@@ -150,6 +208,6 @@ async function generateRoadmap(role, prob, containerId) {
 
 function toggleTheme() {
     document.body.classList.toggle('dark-mode');
+    const btn = document.getElementById('themeBtn');
+    btn.innerHTML = document.body.classList.contains('dark-mode') ? '☀️ Light Mode' : '🌙 Dark Mode';
 }
-
-init();

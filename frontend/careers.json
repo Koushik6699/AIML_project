@@ -9,8 +9,7 @@
         {"name": "OOP", "weight": 9},
         {"name": "C++", "weight": 8},
         {"name": "Java", "weight": 8},
-        {"name": "SQL", "weight": 6},
-        {"name": "Software Engineering", "weight": 7}
+        {"name": "SQL", "weight": 6}
       ]
     },
     {
@@ -22,33 +21,91 @@
         {"name": "AIML Advanced", "weight": 10},
         {"name": "Python", "weight": 9},
         {"name": "Linear Algebra", "weight": 8},
-        {"name": "Probability", "weight": 8},
         {"name": "DL", "weight": 9}
       ]
     },
     {
-      "id": "data_scientist",
-      "title": "Data Scientist",
-      "description": "Interpreting complex data to help organizations make decisions.",
+      "id": "vlsi_engineer",
+      "title": "VLSI Design Engineer",
+      "description": "Designing and testing integrated circuits and semiconductor devices.",
       "subject_weights": [
-        {"name": "Stats", "weight": 10},
-        {"name": "Probability", "weight": 9},
-        {"name": "Python", "weight": 8},
-        {"name": "SQL", "weight": 7},
-        {"name": "ML", "weight": 8},
-        {"name": "DS", "weight": 9}
+        {"name": "VLSI Design", "weight": 10},
+        {"name": "Digital Electronics", "weight": 9},
+        {"name": "Circuit Theory", "weight": 8},
+        {"name": "Microprocessors", "weight": 7},
+        {"name": "Analog Circuits", "weight": 8}
       ]
     },
     {
-      "id": "web_dev",
-      "title": "Full Stack Developer",
-      "description": "Creating modern web interfaces and scalable backend services.",
+      "id": "embedded_sys",
+      "title": "Embedded Systems Developer",
+      "description": "Combining hardware and software for specialized control systems.",
       "subject_weights": [
-        {"name": "Node.js", "weight": 10},
-        {"name": "SQL", "weight": 8},
-        {"name": "OOP", "weight": 6},
-        {"name": "DBMS", "weight": 7},
-        {"name": "DSA", "weight": 5}
+        {"name": "Embedded Systems", "weight": 10},
+        {"name": "C", "weight": 9},
+        {"name": "Microprocessors", "weight": 9},
+        {"name": "IoT", "weight": 8},
+        {"name": "Control Systems", "weight": 7}
+      ]
+    },
+    {
+      "id": "robotics_specialist",
+      "title": "Robotics & Automation Engineer",
+      "description": "Creating autonomous systems using mechanical design and AI controllers.",
+      "subject_weights": [
+        {"name": "Robotics", "weight": 10},
+        {"name": "Mechatronics", "weight": 10},
+        {"name": "Control Systems", "weight": 8},
+        {"name": "Python", "weight": 7},
+        {"name": "CAD/CAM", "weight": 6}
+      ]
+    },
+    {
+      "id": "iot_architect",
+      "title": "IoT Solutions Architect",
+      "description": "Designing networks of connected devices and sensors.",
+      "subject_weights": [
+        {"name": "IoT", "weight": 10},
+        {"name": "Communication Systems", "weight": 9},
+        {"name": "Cloud Computing", "weight": 8},
+        {"name": "Cyber Security", "weight": 7},
+        {"name": "Signal Processing", "weight": 7}
+      ]
+    },
+    {
+      "id": "thermal_engineer",
+      "title": "Thermal Systems Designer",
+      "description": "Analyzing heat transfer and energy conversion in mechanical systems.",
+      "subject_weights": [
+        {"name": "Thermodynamics", "weight": 10},
+        {"name": "Heat Transfer", "weight": 10},
+        {"name": "Fluid Mechanics", "weight": 9},
+        {"name": "Refrigeration", "weight": 8},
+        {"name": "Automobile Engineering", "weight": 6}
+      ]
+    },
+    {
+      "id": "manufacturing_lead",
+      "title": "Manufacturing & Operations Manager",
+      "description": "Optimizing industrial production processes and workflows.",
+      "subject_weights": [
+        {"name": "Manufacturing Process", "weight": 10},
+        {"name": "Industrial Engineering", "weight": 9},
+        {"name": "CAD/CAM", "weight": 8},
+        {"name": "Solid Mechanics", "weight": 7},
+        {"name": "Kinematics", "weight": 6}
+      ]
+    },
+    {
+      "id": "ev_specialist",
+      "title": "Electric Vehicle Engineer",
+      "description": "Developing powertrain and battery systems for modern transport.",
+      "subject_weights": [
+        {"name": "Automobile Engineering", "weight": 10},
+        {"name": "Analog Circuits", "weight": 8},
+        {"name": "Thermodynamics", "weight": 8},
+        {"name": "Control Systems", "weight": 9},
+        {"name": "Embedded Systems", "weight": 7}
       ]
     }
   ]
