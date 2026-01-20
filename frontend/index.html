@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PathFinder AI | Career Precision Tool</title>
@@ -17,7 +18,7 @@
             <ul>
                 <li class="active" onclick="showSection('hero')">🏠 Dashboard</li>
                 <li onclick="showSection('assessment')">🎯 Analyze Skills</li>
-                <li>📊 Market Trends</li>
+                
                 <li>👤 Profile</li>
             </ul>
         </nav>
@@ -60,17 +61,23 @@
                     <h3>Choose Your Department</h3>
                     <div class="branch-grid">
                         <div class="branch-card" onclick="selectBranch('CSE')">
-                            <div class="branch-icon">💻</div>
+                            <div class="branch-icon">
+                                <i class="fa-solid fa-laptop-code dept-icon"></i>
+                            </div>
                             <h4>CSE / AI-ML</h4>
                             <p>Software, AI, Web & Data</p>
                         </div>
                         <div class="branch-card" onclick="selectBranch('ECE')">
-                            <div class="branch-icon">📡</div>
+                            <div class="branch-icon">
+                                <i class="fa-solid fa-microchip dept-icon"></i>
+                            </div>
                             <h4>Electrical / ECE</h4>
                             <p>VLSI, IoT & Communication</p>
                         </div>
                         <div class="branch-card" onclick="selectBranch('MECH')">
-                            <div class="branch-icon">⚙️</div>
+                            <div class="branch-icon">
+                                <i class="fa-solid fa-gear dept-icon"></i>
+                            </div>
                             <h4>Mechanical</h4>
                             <p>Robotics, CAD & Thermal</p>
                         </div>

@@ -251,7 +251,7 @@ async function generateRoadmap(role, prob, containerId) {
 I am a ${currentBranch} student.
 My mastered subjects are ${selectedSubjects.join(", ")}.
 I have a ${prob}% probability for the role of ${role}.
-Provide a high-impact roadmap with 3 specific technical skills to learn and 3 project ideas.
+Provide a high-impact roadmap with 3 specific technical skills to learn and 3 project ideas, keep very short points and short answer.
 `;
 
     roadmapBox.style.display = "block";
