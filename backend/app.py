@@ -1,10 +1,13 @@
 import os
+from dotenv import load_dotenv
+load_dotenv()
+
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from dotenv import load_dotenv
 
 from ai_service import chat_with_ai
 from ml_service import predict_career
+
 
 # ===================== APP SETUP =====================
 
