@@ -5,6 +5,10 @@ It bridges the gap between academic performance and real-world industry roles by
 
 ---
 
+Live Demo: https://pathfinderaiml.netlify.app/
+
+---
+
 ## 🚀 Features
 
 - **Job Probability Engine**  
