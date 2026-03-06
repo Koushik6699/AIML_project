@@ -1,134 +1,221 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PathFinder AI | Career Precision Tool</title>
+
+    <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <!-- CSS -->
     <link rel="stylesheet" href="style.css">
+
+    <!-- PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
+
 <body class="light-mode">
 
-    <aside class="sidebar">
-        <div class="sidebar-header">
-            <div class="logo">Path<span>Finder</span></div>
+<!-- ========== SIDEBAR ========== -->
+<aside class="sidebar">
+    <div class="sidebar-header">
+        <div class="logo">Path<span>Finder</span></div>
+    </div>
+
+    <nav class="sidebar-nav">
+        <ul>
+            <li class="active" onclick="showSection('hero')">🏠 Dashboard</li>
+            <li onclick="showSection('assessment')">🎯 Analyze Skills</li>
+            <li>👤 Profile</li>
+        </ul>
+    </nav>
+
+    <div class="sidebar-footer">
+        <button class="theme-toggle-btn" onclick="toggleTheme()" id="themeBtn">
+            🌙 Dark Mode
+        </button>
+    </div>
+</aside>
+
+<!-- ========== MAIN CONTENT ========== -->
+<main class="main-content">
+
+<!-- ================= HERO PAGE ================= -->
+<section id="hero" class="content-section">
+    <div class="hero-card">
+        <div class="hero-text">
+            <h1>Predict Your <span class="gradient-text">Future Career</span></h1>
+            <p>AI-driven skill analysis mapped to real industry roles.</p>
+            <button class="btn-primary" onclick="startAssessment()">Get Started</button>
         </div>
-        <nav class="sidebar-nav">
-            <ul>
-                <li class="active" onclick="showSection('hero')">🏠 Dashboard</li>
-                <li onclick="showSection('assessment')">🎯 Analyze Skills</li>
-                
-                <li>👤 Profile</li>
-            </ul>
-        </nav>
-        <div class="sidebar-footer">
-            <button class="theme-toggle-btn" onclick="toggleTheme()" id="themeBtn">
-                <span class="icon">🌙</span> Dark Mode
-            </button>
+    </div>
+</section>
+
+<!-- ================= ASSESSMENT ================= -->
+<section id="assessment" class="content-section" style="display:none;">
+
+    <div class="container-header">
+        <h2>Skill Assessment</h2>
+        <p>Complete the steps below.</p>
+    </div>
+
+    <div class="assessment-card">
+
+        <!-- Stepper -->
+        <div class="stepper">
+            <div class="step active">1<span>Branch</span></div>
+            <div class="step">2<span>Skills</span></div>
+            <div class="step">3<span>Marks</span></div>
         </div>
-    </aside>
 
-    <main class="main-content">
-        
-        <section id="hero" class="content-section">
-            <div class="hero-card">
-                <div class="hero-text">
-                    <h1>Predict Your <span class="gradient-text">Future Career</span></h1>
-                    <p>PathFinder uses AI-driven analysis to map your academic strengths to industry-specific roles across CSE, ECE, and Mechanical Engineering.</p>
-                    <button class="btn-primary" onclick="startAssessment()">Get Started</button>
+        <!-- STEP 1 -->
+        <div id="step-1" class="step-content">
+            <h3>Choose Your Department</h3>
+            <div class="branch-grid">
+                <div class="branch-card" onclick="selectBranch('CSE')">
+                    <i class="fa-solid fa-laptop-code dept-icon"></i>
+                    <h4>CSE / AI-ML</h4>
                 </div>
-                <div class="hero-visual">
-                    <div class="floating-icons">✨ 🚀 🧬</div>
+                <div class="branch-card" onclick="selectBranch('ECE')">
+                    <i class="fa-solid fa-microchip dept-icon"></i>
+                    <h4>ECE</h4>
                 </div>
-            </div>
-        </section>
-
-        <section id="assessment" class="content-section" style="display:none;">
-            <div class="container-header">
-                <h2>Skill Assessment</h2>
-                <p>Complete the steps below to see your job probability scores.</p>
-            </div>
-
-            <div class="assessment-card">
-                <div class="stepper">
-                    <div class="step active" id="step-dot-1">1<span>Branch</span></div>
-                    <div class="step" id="step-dot-2">2<span>Skills</span></div>
-                    <div class="step" id="step-dot-3">3<span>Score</span></div>
-                </div>
-
-                <div id="step-1" class="step-content">
-                    <h3>Choose Your Department</h3>
-                    <div class="branch-grid">
-                        <div class="branch-card" onclick="selectBranch('CSE')">
-                            <div class="branch-icon">
-                                <i class="fa-solid fa-laptop-code dept-icon"></i>
-                            </div>
-                            <h4>CSE / AI-ML</h4>
-                            <p>Software, AI, Web & Data</p>
-                        </div>
-                        <div class="branch-card" onclick="selectBranch('ECE')">
-                            <div class="branch-icon">
-                                <i class="fa-solid fa-microchip dept-icon"></i>
-                            </div>
-                            <h4>Electrical / ECE</h4>
-                            <p>VLSI, IoT & Communication</p>
-                        </div>
-                        <div class="branch-card" onclick="selectBranch('MECH')">
-                            <div class="branch-icon">
-                                <i class="fa-solid fa-gear dept-icon"></i>
-                            </div>
-                            <h4>Mechanical</h4>
-                            <p>Robotics, CAD & Thermal</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="step-2" class="step-content" style="display:none;">
-                    <h3>Select Mastered Subjects</h3>
-                    <p id="selected-branch-label" class="badge">Branch: None</p>
-                    <div class="checkbox-grid" id="subject-grid">
-                        </div>
-                    <div class="flex-btns">
-                        <button class="btn-secondary" onclick="prevStep(1)">Back</button>
-                        <button class="btn-primary" onclick="goToStep3()">Next: Enter Marks</button>
-                    </div>
-                </div>
-
-                <div id="step-3" class="step-content" style="display:none;">
-                    <h3>Academic Performance</h3>
-                    <div id="marks-container"></div>
-                    <div class="flex-btns">
-                        <button class="btn-secondary" onclick="prevStep(2)">Back</button>
-                        <button class="btn-primary" onclick="calculateJobProbability()">Analyze Probability</button>
-                    </div>
+                <div class="branch-card" onclick="selectBranch('MECH')">
+                    <i class="fa-solid fa-gear dept-icon"></i>
+                    <h4>Mechanical</h4>
                 </div>
             </div>
-        </section>
+        </div>
 
-        <section id="resultsPage" class="content-section" style="display:none;">
-            <div class="container-header">
-                <h2>Your Career Matches</h2>
-                <p>Based on your mastered skills and academic weightage.</p>
+        <!-- STEP 2 -->
+        <div id="step-2" class="step-content" style="display:none;">
+            <h3>Select Mastered Subjects</h3>
+            <p id="selected-branch-label" class="badge">Branch: None</p>
+            <div id="subject-grid" class="checkbox-grid"></div>
+            <div class="flex-btns">
+                <button class="btn-secondary" onclick="prevStep(1)">Back</button>
+                <button class="btn-primary" onclick="goToStep3()">Next</button>
             </div>
-            <div id="resultsContainer" class="results-grid"></div>
-            <div class="center-btn">
-                <button class="btn-secondary" onclick="location.reload()">Start New Analysis</button>
-            </div>
-        </section>
+        </div>
 
-        <footer class="footer">
-            <div class="footer-content">
-                <p>© 2026 PathFinder AI | Engineering Career Roadmap</p> 
-                <div class="footer-links">
-                    <a href="#">Privacy</a>
-                    <a href="#">Terms</a>
-                    <a href="#">Support</a>
-                </div>
+        <!-- STEP 3 -->
+        <div id="step-3" class="step-content" style="display:none;">
+            <h3>Enter Marks</h3>
+            <div id="marks-container"></div>
+            <div class="flex-btns">
+                <button class="btn-secondary" onclick="prevStep(2)">Back</button>
+                <button class="btn-primary" onclick="calculateJobProbability()">Analyze</button>
             </div>
-        </footer>
-    </main>
+        </div>
 
-    <script src="script.js"></script>
+    </div>
+</section>
+
+<!-- ================= RESULTS ================= -->
+<section id="resultsPage" class="content-section" style="display:none;">
+    <div class="container-header">
+        <h2>Your Career Matches</h2>
+        <p>Based on your mastered skills and academic weightage.</p>
+    </div>
+
+    <div id="resultsContainer" class="results-grid"></div>
+
+    <div class="center-btn">
+        <button class="btn-secondary" onclick="location.reload()">Start New Analysis</button>
+    </div>
+</section>
+
+<!-- ================= FOOTER ================= -->
+<footer class="footer">
+    <div class="footer-content">
+        <p>© 2026 PathFinder AI | Engineering Career Roadmap</p>
+        <div class="footer-links">
+            <a href="#">Privacy</a>
+            <a href="#">Terms</a>
+            <a href="#">Support</a>
+        </div>
+    </div>
+</footer>
+
+</main>
+
+<!-- ================= MODALS ================= -->
+
+<!-- Interview Modal -->
+<div id="interviewModal" class="assessment-card modal"
+     style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%);
+     z-index:1001; width:90%; max-width:850px; height:85vh;">
+
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+        <h3>🎙️ <span id="interviewRoleTitle"></span> Interview</h3>
+        <button onclick="closeInterview()" style="background:none; border:none; font-size:1.5rem;">&times;</button>
+    </div>
+
+    <div id="interviewChat"
+         style="flex:1; overflow-y:auto; border:1px solid var(--border); border-radius:12px;
+         padding:15px; margin-bottom:10px;"></div>
+
+    <div>
+        <input id="userInterviewInput" type="text" placeholder="Type your answer..."
+               disabled style="width:100%; padding:12px; border-radius:10px; margin-bottom:10px;">
+
+        <div style="display:flex; gap:10px;">
+            <button id="micBtn" class="btn-secondary" onclick="toggleMic()" disabled>🎤</button>
+            <button id="sendInterviewBtn" class="btn-primary" onclick="sendInterviewAnswer()" disabled>Send</button>
+        </div>
+
+        <button id="startInterviewBtn" class="btn-primary" style="width:100%; margin-top:12px;"
+                onclick="initiateInterview()">Start Interview</button>
+    </div>
+</div>
+
+
+<!-- Assignment Modal -->
+
+<div id="assignmentModal" class="assessment-card modal"
+     style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%);
+     z-index:1001; width:90%; max-width:700px;">
+
+    <h3 id="quizRoleTitle"></h3>
+
+    <div style="height:6px; background:#e5e7eb; border-radius:10px; overflow:hidden; margin:10px 0;">
+        <div id="quizProgressBar" style="height:100%; width:0%; background:#2563eb;"></div>
+    </div>
+
+    <p id="questionCountLabel"></p>
+
+    <div id="quizContainer"></div>
+
+    <div id="quizFooter" style="display:none;"></div>
+
+    <div style="margin-top:15px; text-align:right;">
+        <button class="btn-secondary" onclick="closeAssignment()">Close</button>
+    </div>
+</div>
+
+
+<!-- Report Modal (FIXED & HIDDEN) -->
+<div id="reportFormModal" class="assessment-card modal" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); z-index:1001;">
+    <h3>📋 Generate Career Report</h3>
+    <input type="text" id="userName" placeholder="Full Name">
+    <input type="date" id="userDOB">
+    <input type="text" id="userCourse" placeholder="Course">
+
+    <div class="flex-btns">
+        <button class="btn-secondary" onclick="closeReportForm()">Cancel</button>
+        <button class="btn-primary" onclick="processReportPDF()">Download PDF</button>
+    </div>
+</div>
+
+<!-- Hidden PDF Template -->
+<div id="pdf-template" style="display:none;"></div>
+
+<div id="modalOverlay" onclick="closeAllModals()"></div>
+
+<!-- JS -->
+<script src="script.js"></script>
+
 </body>
 </html>

@@ -320,31 +320,12 @@ body {
 /* Results styling same as previous but integrated into new card theme */
 .career-card {
     background: var(--card);
-    padding: 25px;
+    padding: 50px;
     border-radius: 20px;
     border: 1px solid var(--border);
     border-left: 6px solid var(--primary);
     margin-bottom: 20px;
     box-shadow: var(--shadow);
-}
-.btn-ai-roadmap {
-    margin-top: 12px;
-    padding: 10px 18px;
-    border: none;
-    border-radius: 8px;
-    background: linear-gradient(135deg, #4f46e5, #3b82f6);
-    color: white;
-    font-weight: 600;
-    font-size: 14px;
-    cursor: pointer;
-    transition: all 0.25s ease;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-}
-
-.btn-ai-roadmap:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.25);
-    background: linear-gradient(135deg, #4338ca, #2563eb);
 }
 
 .btn-ai-roadmap:disabled {
@@ -355,4 +336,258 @@ body {
     font-size: 36px;
     color: #4f46e5;
     margin-bottom: 12px;
+}
+/* --- New Action Buttons Styling --- */
+/* --- Compact Action Buttons --- */
+.action-btns {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 15px;
+    justify-content: flex-start; /* Aligns them to the left */
+}
+
+.action-btns button {
+    width: auto;             /* Stops stretching */
+    padding: 8px 16px;       /* Balanced padding */
+    font-size: 0.8rem;
+    border-radius: 12px;     /* Matches your card's roundness */
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--text-main);
+    transition: 0.3s;
+}
+
+
+.btn-interview {
+    background: linear-gradient(135deg, #4338ca, #2563eb);
+    color: white;
+    border: 1px solid var(--primary);
+}
+
+.btn-assignment {
+    background: linear-gradient(135deg, #4338ca, #2563eb);
+    color: white;
+    border: 1px solid var(--primary);
+}
+
+.btn-report {
+    background: linear-gradient(135deg, #4338ca, #2563eb);
+    color: white;
+    border: 1px solid var(--primary);
+}
+
+/* Hover effects */
+.action-btns button:hover {
+    filter: brightness(0.9);
+    transform: translateY(-1px);
+}
+
+.dark-mode .btn-interview { background: rgba(99, 102, 241, 0.1); }
+.dark-mode .btn-assignment { background: rgba(245, 158, 11, 0.1); }
+.dark-mode .btn-report { background: rgba(16, 185, 129, 0.1); }
+
+
+
+/* --- Interview Chat Bubbles --- */
+.ai-msg, .user-msg {
+    max-width: 85%;
+    padding: 12px 16px;
+    border-radius: 15px;
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+.ai-msg {
+    align-self: flex-start;
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--text-main);
+    border-bottom-left-radius: 2px;
+}
+
+.user-msg {
+    align-self: flex-end;
+    background: var(--primary);
+    color: white;
+    border-bottom-right-radius: 2px;
+}
+
+.speaking-word {
+    color: var(--secondary);
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+/* --- Quiz / Assignment Styling --- */
+.option-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    padding: 15px 20px;
+    border-radius: 12px;
+    text-align: left;
+    cursor: pointer;
+    font-weight: 500;
+    color: var(--text-main);
+    transition: 0.2s;
+}
+
+.option-card:hover {
+    background: var(--primary-light);
+    border-color: var(--primary);
+}
+
+.dark-mode .option-card:hover {
+    background: var(--accent-glow);
+}
+
+/* --- Roadmaps & Animations --- */
+.ai-roadmap-box {
+    margin-top: 15px;
+    padding: 20px;
+    background: var(--bg-main);
+    border-radius: 15px;
+    border-left: 4px solid var(--secondary);
+    font-size: 0.9rem;
+}
+
+.loader {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    padding: 40px;
+    color: var(--text-muted);
+}
+
+.spinner {
+    width: 30px;
+    height: 30px;
+    border: 3px solid var(--border);
+    border-top: 3px solid var(--primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* --- Mic Pulse Animation --- */
+.mic-active {
+    background: #ef4444 !important;
+    color: white !important;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+/* ============================= */
+/* CAREER CARD ACTION BUTTONS */
+/* ============================= */
+
+.action-btns {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-top: 18px;
+    align-items: center;
+}
+
+/* Common button base */
+.action-btns button {
+    height: 42px;
+    min-width: 140px;
+    padding: 0 18px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    cursor: pointer;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.25s ease;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+
+/* 🔵 Primary Gradient Style */
+.btn-ai-roadmap,
+.btn-interview,
+.btn-assignment,
+.btn-report {
+    background: linear-gradient(135deg, #1e3a8a, #2563eb);
+    color: #ffffff;
+}
+
+/* Hover effect */
+.action-btns button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 22px rgba(37, 99, 235, 0.35);
+    filter: brightness(1.05);
+}
+
+/* Active click */
+.action-btns button:active {
+    transform: scale(0.98);
+}
+
+/* Disabled state */
+.action-btns button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+/* Dark mode tuning */
+.dark-mode .action-btns button {
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.6);
+}
+
+/* ============================= */
+/* CAREER CARD LAYOUT FIX */
+/* ============================= */
+
+.career-card {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* Probability bar (if present) */
+.prob-bar-bg {
+    width: 100%;
+    height: 8px;
+    background: var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.prob-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #2563eb, #1e40af);
+    border-radius: 10px;
+}
+
+/* ============================= */
+/* MOBILE RESPONSIVENESS */
+/* ============================= */
+
+@media (max-width: 768px) {
+    .action-btns {
+        gap: 10px;
+    }
+
+    .action-btns button {
+        min-width: 100%;
+        justify-content: center;
+    }
 }
