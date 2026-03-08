@@ -1,4 +1,3 @@
-
 // ===================== FORCE HIDE MODALS ON LOAD =====================
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -13,7 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (overlay) overlay.style.display = "none";
 });
 // Change this when deploying
-const BACKEND_BASE_URL = "https://aiml-project-ascp.onrender.com";
+const BACKEND_BASE_URL = "http://127.0.0.1:5000";
 
 
 // ===================== SUBJECT DATABASE =====================
@@ -207,16 +206,16 @@ async function calculateJobProbability() {
                 <div class="career-card">
                     <div style="display:flex; justify-content:space-between; align-items:center;">
                         <div>
-                            <h4 style="color:var(--text-muted); text-transform:uppercase; font-size:0.7rem; letter-spacing:1px; margin-bottom:5px;">
+                            <h4 style="color:var(--text-muted); text-transform:uppercase; font-size:0.68rem; letter-spacing:1.2px; margin-bottom:5px; font-weight:700;">
                                 Target Role
                             </h4>
-                            <h3 style="margin:0;">${item.role}</h3>
+                            <h3 style="margin:0; font-family:'Syne',sans-serif; font-size:1.4rem; font-weight:800;">${item.role}</h3>
                         </div>
                         <div style="text-align:right;">
-                            <h4 style="color:var(--text-muted); text-transform:uppercase; font-size:0.7rem; letter-spacing:1px; margin-bottom:5px;">
-                                Probability
+                            <h4 style="color:var(--text-muted); text-transform:uppercase; font-size:0.68rem; letter-spacing:1.2px; margin-bottom:5px; font-weight:700;">
+                                Match Score
                             </h4>
-                            <span style="font-size:1.5rem; font-weight:800; color:var(--primary);">
+                            <span style="font-size:2rem; font-weight:800; font-family:'Syne',sans-serif; background:var(--gradient-hero); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;">
                                 ${item.prob}%
                             </span>
                         </div>
@@ -225,6 +224,7 @@ async function calculateJobProbability() {
                     <div class="prob-bar-bg">
                         <div class="prob-bar-fill" style="width: ${item.prob}%"></div>
                     </div>
+
                     <div class="action-btns">
                         <button 
                             class="btn-ai-roadmap" 
@@ -250,7 +250,6 @@ async function calculateJobProbability() {
                             onclick="checkReportReady('${item.role}', '${cardId}')">
                             📋 Generate Report
                         </button>
-
                     </div>  
 
                     <div id="${cardId}" class="ai-roadmap-box" style="display:none;"></div>
@@ -284,7 +283,7 @@ Provide a high-impact roadmap with 3 specific technical skills to learn and 3 pr
 `;
 
     roadmapBox.style.display = "block";
-    roadmapBox.innerHTML = `<div class="spinner"></div> Mapping your path...`;
+    roadmapBox.innerHTML = `<div class="loader"><div class="spinner"></div> Mapping your path...</div>`;
     btn.disabled = true;
 
     try {
@@ -308,7 +307,6 @@ Provide a high-impact roadmap with 3 specific technical skills to learn and 3 pr
         let formattedText = data.advice
             .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
             .replace(/\* /g, '• ')
-            .replace(/^###\s*(.*)$/gm, '<strong>$1</strong>')
             .replace(/\n/g, '<br>');
 
         roadmapBox.innerHTML = `
@@ -320,7 +318,7 @@ Provide a high-impact roadmap with 3 specific technical skills to learn and 3 pr
     } catch (error) {
         console.error("Roadmap error:", error);
         roadmapBox.innerHTML = `
-            <span style="color:red;">
+            <span style="color:var(--danger);">
                 Failed to load roadmap: ${error.message}
             </span>
         `;
@@ -336,8 +334,8 @@ function toggleTheme() {
     const btn = document.getElementById('themeBtn');
 
     btn.innerHTML = document.body.classList.contains('dark-mode')
-        ? '☀️ Light Mode'
-        : '🌙 Dark Mode';
+        ? '<i class="fa-solid fa-sun"></i> Light Mode'
+        : '<i class="fa-solid fa-moon"></i> Dark Mode';
 }
 
 // ===================== VOICE & INTERVIEW SYSTEM =====================
@@ -436,7 +434,8 @@ function startInterview(role) {
     window.interviewRole = role;
     window.questionCount = 0; 
     document.getElementById('interviewRoleTitle').innerText = role;
-    document.getElementById('interviewModal').style.display = 'block';
+    document.getElementById('interviewModal').style.display = 'flex';
+    document.getElementById('modalOverlay').style.display = 'block';
     document.getElementById('interviewChat').innerHTML = `<div class="ai-msg">Ready for your ${role} interview? We will have ${INTERVIEW_LIMIT} questions. Click "Start".</div>`;
     document.getElementById('startInterviewBtn').style.display = 'block';
 }
@@ -445,6 +444,7 @@ function closeInterview() {
     synth.cancel();
     if(recognition) recognition.stop();
     document.getElementById('interviewModal').style.display = 'none';
+    document.getElementById('modalOverlay').style.display = 'none';
 }
 
 async function initiateInterview() {
@@ -520,6 +520,9 @@ async function sendToAI(promptText) {
         msgDiv.innerText = "Error connecting to AI.";
     }
 }
+
+// ===================== ASSIGNMENT / QUIZ SYSTEM =====================
+
 let currentQuizRole = "";
 let quizQuestions = [];
 let currentQuestionIndex = 0;
@@ -527,33 +530,32 @@ let userScore = 0;
 
 function openAssignmentModal(role) {
     currentQuizRole = role;
-    document.getElementById('quizRoleTitle').innerText = role;
-    document.getElementById('assignmentModal').style.display = 'block';
+    document.getElementById('quizRoleTitle').innerText = `📝 ${role} — Technical Challenge`;
+    document.getElementById('assignmentModal').style.display = 'flex';
+    document.getElementById('modalOverlay').style.display = 'block';
     
     // Reset Quiz State
     document.getElementById('quizContainer').innerHTML = `
-        <div class="quiz-intro" style="text-align:center;">
-            <i class="fa-solid fa-file-lines dept-icon" style="font-size:50px;"></i>
+        <div class="quiz-intro">
+            <i class="fa-solid fa-file-lines dept-icon" style="font-size:44px; color: var(--primary);"></i>
             <h3>Ready for the ${role} Technical Challenge?</h3>
             <p>20 Multiple Choice Questions to test your expertise.</p>
             <button class="btn-primary" onclick="generateAssignment()">Start Assignment</button>
         </div>
     `;
     document.getElementById('quizProgressBar').style.width = "0%";
+    document.getElementById('questionCountLabel').innerText = "";
 }
 
 function closeAssignment() {
     document.getElementById('assignmentModal').style.display = 'none';
+    document.getElementById('modalOverlay').style.display = 'none';
 }
-
-// Next step will be writing the AI prompt to fetch the 20 MCQs!
-// ===================== ASSIGNMENT / QUIZ SYSTEM =====================
 
 if (window.quizQuestions === undefined) { window.quizQuestions = []; }
 if (window.currentQuestionIndex === undefined) { window.currentQuestionIndex = 0; }
 if (window.userScore === undefined) { window.userScore = 0; }
 
-// Use the window version inside your functions
 async function generateAssignment() {
     const container = document.getElementById('quizContainer');
     const footer = document.getElementById('quizFooter');
@@ -595,10 +597,11 @@ async function generateAssignment() {
         
     } catch (e) {
         console.error("Quiz Generation Error:", e);
-        container.innerHTML = `<p style="color:red;">Error: AI returned invalid data. Please try again.</p>
+        container.innerHTML = `<p style="color:var(--danger); margin-bottom:12px;">Error: AI returned invalid data. Please try again.</p>
         <button class="btn-primary" onclick="generateAssignment()">Retry</button>`;
     }
 }
+
 function displayQuestion() {
     const container = document.getElementById('quizContainer');
     const questionData = window.quizQuestions[window.currentQuestionIndex];
@@ -609,8 +612,8 @@ function displayQuestion() {
 
     container.innerHTML = `
         <div class="question-box">
-            <h3 style="margin-bottom:20px;">${questionData.question}</h3>
-            <div class="options-list" style="display:flex; flex-direction:column; gap:10px;">
+            <h3>${questionData.question}</h3>
+            <div style="display:flex; flex-direction:column; gap:8px;">
                 ${questionData.options.map((opt, i) => `
                     <button class="option-card" onclick="checkAnswer(${i})">
                         ${opt}
@@ -641,15 +644,15 @@ function showQuizResults() {
     footer.style.display = "none";
 
     const percentage = (window.userScore / window.quizQuestions.length) * 100;
-    let feedback = percentage >= 80 ? "Excellent! You are industry-ready." : 
-                   percentage >= 50 ? "Good job! Keep practicing." : 
-                   "Review the roadmap to improve.";
+    let feedback = percentage >= 80 ? "🏆 Excellent! You are industry-ready." : 
+                   percentage >= 50 ? "👍 Good job! Keep practicing." : 
+                   "📘 Review the roadmap to improve.";
 
     container.innerHTML = `
-        <div class="quiz-results" style="text-align:center; padding: 20px;">
-            <i class="fa-solid fa-trophy" style="font-size: 50px; color: #f59e0b;"></i>
-            <h2>Assignment Completed!</h2>
-            <div class="score-circle" style="font-size: 3rem; font-weight: 800; color: var(--primary); margin: 20px 0;">
+        <div class="quiz-results">
+            <i class="fa-solid fa-trophy" style="font-size:48px; color:#f59e0b;"></i>
+            <h2>Assignment Complete!</h2>
+            <div style="font-size:3rem; font-weight:800; font-family:'Syne',sans-serif; background:var(--gradient-hero); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; margin:16px 0;">
                 ${window.userScore} / ${window.quizQuestions.length}
             </div>
             <p>${feedback}</p>
@@ -657,8 +660,8 @@ function showQuizResults() {
         </div>
     `;
 }
-// Track progress for each role
-let completionTracker = {};
+
+// ===================== REPORT SYSTEM =====================
 
 function checkReportReady(role, cardId) {
     // Check Roadmap completion
@@ -681,11 +684,13 @@ function checkReportReady(role, cardId) {
     window.currentReportRole = role;
     window.currentReportCardId = cardId;
 
-    document.getElementById('reportFormModal').style.display = 'block';
+    document.getElementById('reportFormModal').style.display = 'flex';
+    document.getElementById('modalOverlay').style.display = 'block';
 }
 
 function closeReportForm() {
     document.getElementById('reportFormModal').style.display = 'none';
+    document.getElementById('modalOverlay').style.display = 'none';
 }
 
 function processReportPDF() {
@@ -712,19 +717,19 @@ function processReportPDF() {
     const element = document.getElementById('pdf-template');
     element.style.display = "block";
     element.innerHTML = `
-        <h1 style="color:#6366f1">PathFinder AI Career Report</h1>
+        <h1 style="color:#4f46e5; font-family:sans-serif;">PathFinder AI Career Report</h1>
         <hr>
         <p><strong>Name:</strong> ${name} | <strong>DOB:</strong> ${dob}</p>
         <p><strong>Course:</strong> ${course}</p>
         <hr>
-        <h2>Target Role: ${window.currentReportRole}</h2>
+        <h2 style="font-family:sans-serif;">Target Role: ${window.currentReportRole}</h2>
         <div style="background:#f3f4f6; padding: 15px; border-radius:10px;">
-            <h3>Technical Assignment Score: ${score}/20</h3>
+            <h3 style="font-family:sans-serif;">Technical Assignment Score: ${score}/20</h3>
             <p><strong>Evaluation:</strong> ${evaluation}</p>
         </div>
-        <h3>AI Career Roadmap</h3>
+        <h3 style="font-family:sans-serif;">AI Career Roadmap</h3>
         <div>${roadmapContent}</div>
-        <footer style="margin-top:50px; font-size:10px;">Generated by PathFinder AI - 2026</footer>
+        <footer style="margin-top:50px; font-size:10px; color:#666;">Generated by PathFinder AI — 2026</footer>
     `;
 
     // Convert to PDF
@@ -745,6 +750,7 @@ function processReportPDF() {
         closeReportForm();
     });
 }
+
 function closeAllModals() {
     document.getElementById('interviewModal').style.display = 'none';
     document.getElementById('assignmentModal').style.display = 'none';

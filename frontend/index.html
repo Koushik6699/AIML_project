@@ -6,7 +6,7 @@
     <title>PathFinder AI | Career Precision Tool</title>
 
     <!-- Fonts & Icons -->
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
     <!-- CSS -->
@@ -21,20 +21,29 @@
 <!-- ========== SIDEBAR ========== -->
 <aside class="sidebar">
     <div class="sidebar-header">
-        <div class="logo">Path<span>Finder</span></div>
+        <div class="logo">Path<span>Finder</span><em>AI</em></div>
     </div>
 
     <nav class="sidebar-nav">
         <ul>
-            <li class="active" onclick="showSection('hero')">🏠 Dashboard</li>
-            <li onclick="showSection('assessment')">🎯 Analyze Skills</li>
-            <li>👤 Profile</li>
+            <li class="active" onclick="showSection('hero')">
+                <i class="fa-solid fa-house-chimney"></i>
+                <span>Dashboard</span>
+            </li>
+            <li onclick="showSection('assessment')">
+                <i class="fa-solid fa-crosshairs"></i>
+                <span>Analyze Skills</span>
+            </li>
+            <li>
+                <i class="fa-solid fa-user-astronaut"></i>
+                <span>Profile</span>
+            </li>
         </ul>
     </nav>
 
     <div class="sidebar-footer">
         <button class="theme-toggle-btn" onclick="toggleTheme()" id="themeBtn">
-            🌙 Dark Mode
+            <i class="fa-solid fa-moon"></i> Dark Mode
         </button>
     </div>
 </aside>
@@ -44,13 +53,60 @@
 
 <!-- ================= HERO PAGE ================= -->
 <section id="hero" class="content-section">
-    <div class="hero-card">
-        <div class="hero-text">
-            <h1>Predict Your <span class="gradient-text">Future Career</span></h1>
-            <p>AI-driven skill analysis mapped to real industry roles.</p>
-            <button class="btn-primary" onclick="startAssessment()">Get Started</button>
+
+    <!-- Floating blobs -->
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+
+    <div class="hero-wrapper">
+        <div class="hero-badge">
+            <span class="pulse-dot"></span>
+            AI-Powered Career Intelligence
+        </div>
+
+        <h1 class="hero-title">
+            Predict Your<br>
+            <span class="hero-gradient">Future Career</span>
+        </h1>
+
+        <p class="hero-subtitle">
+            Upload your skills, get matched to real industry roles — with precision roadmaps, mock interviews, and assignments built for you.
+        </p>
+
+        <div class="hero-cta-row">
+            <button class="btn-primary hero-cta" onclick="startAssessment()">
+                <i class="fa-solid fa-rocket"></i> Get Started Free
+            </button>
+            <div class="hero-stat-row">
+                <div class="hero-stat"><strong>3</strong><span>Branches</span></div>
+                <div class="stat-divider"></div>
+                <div class="hero-stat"><strong>AI</strong><span>Roadmaps</span></div>
+                <div class="stat-divider"></div>
+                <div class="hero-stat"><strong>Live</strong><span>Interviews</span></div>
+            </div>
         </div>
     </div>
+
+    <!-- Feature cards floating below -->
+    <div class="hero-cards-row">
+        <div class="feat-card feat-card--blue">
+            <div class="feat-icon"><i class="fa-solid fa-brain"></i></div>
+            <h4>ML-Matched Roles</h4>
+            <p>Roles predicted from your academic data using real ML models.</p>
+        </div>
+        <div class="feat-card feat-card--purple">
+            <div class="feat-icon"><i class="fa-solid fa-microphone-lines"></i></div>
+            <h4>Live AI Interview</h4>
+            <p>Face a virtual recruiter "Alex" who adapts questions to your level.</p>
+        </div>
+        <div class="feat-card feat-card--teal">
+            <div class="feat-icon"><i class="fa-solid fa-file-circle-check"></i></div>
+            <h4>Career Report PDF</h4>
+            <p>Download a detailed report with roadmap and assessment score.</p>
+        </div>
+    </div>
+
 </section>
 
 <!-- ================= ASSESSMENT ================= -->
@@ -58,33 +114,48 @@
 
     <div class="container-header">
         <h2>Skill Assessment</h2>
-        <p>Complete the steps below.</p>
+        <p>Complete the steps below to discover your best-fit careers.</p>
     </div>
 
     <div class="assessment-card">
 
         <!-- Stepper -->
         <div class="stepper">
-            <div class="step active">1<span>Branch</span></div>
-            <div class="step">2<span>Skills</span></div>
-            <div class="step">3<span>Marks</span></div>
+            <div class="step active">
+                <div class="step-num">1</div>
+                <span>Branch</span>
+            </div>
+            <div class="step-line"></div>
+            <div class="step">
+                <div class="step-num">2</div>
+                <span>Skills</span>
+            </div>
+            <div class="step-line"></div>
+            <div class="step">
+                <div class="step-num">3</div>
+                <span>Marks</span>
+            </div>
         </div>
 
         <!-- STEP 1 -->
         <div id="step-1" class="step-content">
             <h3>Choose Your Department</h3>
+            <p class="step-hint">Select your engineering branch to get started.</p>
             <div class="branch-grid">
-                <div class="branch-card" onclick="selectBranch('CSE')">
+                <div class="branch-card branch-cse" onclick="selectBranch('CSE')">
                     <i class="fa-solid fa-laptop-code dept-icon"></i>
                     <h4>CSE / AI-ML</h4>
+                    <p>Data Science, Machine Learning & Web</p>
                 </div>
-                <div class="branch-card" onclick="selectBranch('ECE')">
+                <div class="branch-card branch-ece" onclick="selectBranch('ECE')">
                     <i class="fa-solid fa-microchip dept-icon"></i>
                     <h4>ECE</h4>
+                    <p>VLSI, Embedded Systems & IoT</p>
                 </div>
-                <div class="branch-card" onclick="selectBranch('MECH')">
+                <div class="branch-card branch-mech" onclick="selectBranch('MECH')">
                     <i class="fa-solid fa-gear dept-icon"></i>
                     <h4>Mechanical</h4>
+                    <p>Robotics, CAD & Manufacturing</p>
                 </div>
             </div>
         </div>
@@ -95,18 +166,19 @@
             <p id="selected-branch-label" class="badge">Branch: None</p>
             <div id="subject-grid" class="checkbox-grid"></div>
             <div class="flex-btns">
-                <button class="btn-secondary" onclick="prevStep(1)">Back</button>
-                <button class="btn-primary" onclick="goToStep3()">Next</button>
+                <button class="btn-secondary" onclick="prevStep(1)"><i class="fa-solid fa-arrow-left"></i> Back</button>
+                <button class="btn-primary" onclick="goToStep3()">Next <i class="fa-solid fa-arrow-right"></i></button>
             </div>
         </div>
 
         <!-- STEP 3 -->
         <div id="step-3" class="step-content" style="display:none;">
             <h3>Enter Marks</h3>
+            <p class="step-hint">Enter your marks out of 100 for selected subjects.</p>
             <div id="marks-container"></div>
             <div class="flex-btns">
-                <button class="btn-secondary" onclick="prevStep(2)">Back</button>
-                <button class="btn-primary" onclick="calculateJobProbability()">Analyze</button>
+                <button class="btn-secondary" onclick="prevStep(2)"><i class="fa-solid fa-arrow-left"></i> Back</button>
+                <button class="btn-primary" onclick="calculateJobProbability()"><i class="fa-solid fa-chart-line"></i> Analyze</button>
             </div>
         </div>
 
@@ -123,7 +195,7 @@
     <div id="resultsContainer" class="results-grid"></div>
 
     <div class="center-btn">
-        <button class="btn-secondary" onclick="location.reload()">Start New Analysis</button>
+        <button class="btn-secondary" onclick="location.reload()"><i class="fa-solid fa-rotate"></i> Start New Analysis</button>
     </div>
 </section>
 
@@ -144,22 +216,22 @@
 <!-- ================= MODALS ================= -->
 
 <!-- Interview Modal -->
-<div id="interviewModal" class="assessment-card modal"
+<div id="interviewModal" class="modal-box"
      style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%);
      z-index:1001; width:90%; max-width:850px; height:85vh;">
 
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+    <div class="modal-header">
         <h3>🎙️ <span id="interviewRoleTitle"></span> Interview</h3>
-        <button onclick="closeInterview()" style="background:none; border:none; font-size:1.5rem;">&times;</button>
+        <button class="modal-close" onclick="closeInterview()">&times;</button>
     </div>
 
     <div id="interviewChat"
-         style="flex:1; overflow-y:auto; border:1px solid var(--border); border-radius:12px;
-         padding:15px; margin-bottom:10px;"></div>
+         style="flex:1; overflow-y:auto; border:1px solid var(--border); border-radius:16px;
+         padding:15px; margin-bottom:10px; display:flex; flex-direction:column; gap:10px;"></div>
 
     <div>
         <input id="userInterviewInput" type="text" placeholder="Type your answer..."
-               disabled style="width:100%; padding:12px; border-radius:10px; margin-bottom:10px;">
+               disabled class="modal-input" style="width:100%; margin-bottom:10px;">
 
         <div style="display:flex; gap:10px;">
             <button id="micBtn" class="btn-secondary" onclick="toggleMic()" disabled>🎤</button>
@@ -171,41 +243,40 @@
     </div>
 </div>
 
-
 <!-- Assignment Modal -->
-
-<div id="assignmentModal" class="assessment-card modal"
+<div id="assignmentModal" class="modal-box"
      style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%);
      z-index:1001; width:90%; max-width:700px;">
 
-    <h3 id="quizRoleTitle"></h3>
-
-    <div style="height:6px; background:#e5e7eb; border-radius:10px; overflow:hidden; margin:10px 0;">
-        <div id="quizProgressBar" style="height:100%; width:0%; background:#2563eb;"></div>
+    <div class="modal-header">
+        <h3 id="quizRoleTitle"></h3>
+        <button class="modal-close" onclick="closeAssignment()">&times;</button>
     </div>
 
-    <p id="questionCountLabel"></p>
+    <div class="quiz-progress-bar-wrap">
+        <div id="quizProgressBar" class="quiz-progress-fill"></div>
+    </div>
 
+    <p id="questionCountLabel" class="question-count-label"></p>
     <div id="quizContainer"></div>
-
     <div id="quizFooter" style="display:none;"></div>
 
-    <div style="margin-top:15px; text-align:right;">
-        <button class="btn-secondary" onclick="closeAssignment()">Close</button>
-    </div>
 </div>
 
-
-<!-- Report Modal (FIXED & HIDDEN) -->
-<div id="reportFormModal" class="assessment-card modal" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); z-index:1001;">
-    <h3>📋 Generate Career Report</h3>
-    <input type="text" id="userName" placeholder="Full Name">
-    <input type="date" id="userDOB">
-    <input type="text" id="userCourse" placeholder="Course">
-
-    <div class="flex-btns">
+<!-- Report Modal -->
+<div id="reportFormModal" class="modal-box" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); z-index:1001; max-width:460px; width:90%;">
+    <div class="modal-header">
+        <h3>📋 Generate Career Report</h3>
+        <button class="modal-close" onclick="closeReportForm()">&times;</button>
+    </div>
+    <div class="report-form">
+        <input type="text" id="userName" placeholder="Full Name" class="modal-input">
+        <input type="date" id="userDOB" class="modal-input">
+        <input type="text" id="userCourse" placeholder="Course" class="modal-input">
+    </div>
+    <div class="flex-btns" style="margin-top:20px;">
         <button class="btn-secondary" onclick="closeReportForm()">Cancel</button>
-        <button class="btn-primary" onclick="processReportPDF()">Download PDF</button>
+        <button class="btn-primary" onclick="processReportPDF()"><i class="fa-solid fa-download"></i> Download PDF</button>
     </div>
 </div>
 
