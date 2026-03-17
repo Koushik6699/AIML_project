@@ -4,18 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PathFinder AI | Career Precision Tool</title>
-
-    <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
-    <!-- CSS -->
     <link rel="stylesheet" href="style.css">
-
-    <!-- PDF -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
-
 <body class="light-mode">
 
 <!-- ========== SIDEBAR ========== -->
@@ -23,16 +16,19 @@
     <div class="sidebar-header">
         <div class="logo">Path<span>Finder</span><em>AI</em></div>
     </div>
-
     <nav class="sidebar-nav">
         <ul>
-            <li class="active" onclick="showSection('hero')">
+            <li class="active" onclick="showSection('hero'); setActiveNav(this)">
                 <i class="fa-solid fa-house-chimney"></i>
                 <span>Dashboard</span>
             </li>
-            <li onclick="showSection('assessment')">
+            <li onclick="startAssessment(); setActiveNav(this)">
                 <i class="fa-solid fa-crosshairs"></i>
-                <span>Analyze Skills</span>
+                <span>Predict Career</span>
+            </li>
+            <li onclick="startPhase2(); setActiveNav(this)">
+                <i class="fa-solid fa-map-location-dot"></i>
+                <span>Career Roadmap</span>
             </li>
             <li>
                 <i class="fa-solid fa-user-astronaut"></i>
@@ -40,7 +36,6 @@
             </li>
         </ul>
     </nav>
-
     <div class="sidebar-footer">
         <button class="theme-toggle-btn" onclick="toggleTheme()" id="themeBtn">
             <i class="fa-solid fa-moon"></i> Dark Mode
@@ -51,115 +46,91 @@
 <!-- ========== MAIN CONTENT ========== -->
 <main class="main-content">
 
-<!-- ================= HERO PAGE ================= -->
+<!-- ================= HERO ================= -->
 <section id="hero" class="content-section">
-
-    <!-- Floating blobs -->
     <div class="blob blob-1"></div>
     <div class="blob blob-2"></div>
     <div class="blob blob-3"></div>
 
     <div class="hero-wrapper">
-        <div class="hero-badge">
-            <span class="pulse-dot"></span>
-            AI-Powered Career Intelligence
-        </div>
-
-        <h1 class="hero-title">
-            Predict Your<br>
-            <span class="hero-gradient">Future Career</span>
-        </h1>
-
-        <p class="hero-subtitle">
-            Upload your skills, get matched to real industry roles — with precision roadmaps, mock interviews, and assignments built for you.
-        </p>
-
+        <div class="hero-badge"><span class="pulse-dot"></span>AI-Powered Career Intelligence</div>
+        <h1 class="hero-title">Predict Your<br><span class="hero-gradient">Future Career</span></h1>
+        <p class="hero-subtitle">Upload your skills, get matched to real industry roles — with precision roadmaps, mock interviews, and assignments built for you.</p>
         <div class="hero-cta-row">
-            <button class="btn-primary hero-cta" onclick="startAssessment()">
-                <i class="fa-solid fa-rocket"></i> Get Started Free
+            <button class="btn-primary hero-cta" onclick="startAssessment(); setActiveNav(document.querySelectorAll('.sidebar-nav li')[1])">
+                <i class="fa-solid fa-rocket"></i> Predict My Career
             </button>
-            <div class="hero-stat-row">
-                <div class="hero-stat"><strong>3</strong><span>Branches</span></div>
-                <div class="stat-divider"></div>
-                <div class="hero-stat"><strong>AI</strong><span>Roadmaps</span></div>
-                <div class="stat-divider"></div>
-                <div class="hero-stat"><strong>Live</strong><span>Interviews</span></div>
-            </div>
+            <button class="btn-outline hero-cta" onclick="startPhase2(); setActiveNav(document.querySelectorAll('.sidebar-nav li')[2])">
+                <i class="fa-solid fa-map"></i> Plan My Roadmap
+            </button>
+        </div>
+        <div class="hero-stat-row" style="margin-top:1.8rem;">
+            <div class="hero-stat"><strong>3</strong><span>Branches</span></div>
+            <div class="stat-divider"></div>
+            <div class="hero-stat"><strong>AI</strong><span>Roadmaps</span></div>
+            <div class="stat-divider"></div>
+            <div class="hero-stat"><strong>Live</strong><span>Interviews</span></div>
+            <div class="stat-divider"></div>
+            <div class="hero-stat"><strong>9</strong><span>Career Paths</span></div>
         </div>
     </div>
 
-    <!-- Feature cards floating below -->
     <div class="hero-cards-row">
-        <div class="feat-card feat-card--blue">
+        <div class="feat-card feat-card--blue" onclick="startAssessment()" style="cursor:pointer;">
             <div class="feat-icon"><i class="fa-solid fa-brain"></i></div>
-            <h4>ML-Matched Roles</h4>
-            <p>Roles predicted from your academic data using real ML models.</p>
+            <div class="feat-tag">Phase 1</div>
+            <h4>ML Career Predictor</h4>
+            <p>Enter your subjects and marks — AI predicts the best-fit roles with probability scores.</p>
+            <span class="feat-cta">Start Analysis →</span>
         </div>
-        <div class="feat-card feat-card--purple">
-            <div class="feat-icon"><i class="fa-solid fa-microphone-lines"></i></div>
-            <h4>Live AI Interview</h4>
-            <p>Face a virtual recruiter "Alex" who adapts questions to your level.</p>
+        <div class="feat-card feat-card--purple" onclick="startPhase2()" style="cursor:pointer;">
+            <div class="feat-icon"><i class="fa-solid fa-map-location-dot"></i></div>
+            <div class="feat-tag feat-tag--purple">Phase 2</div>
+            <h4>Goal-Based Roadmap</h4>
+            <p>Pick your dream job, set your timeline — get a month-by-month action plan to get there.</p>
+            <span class="feat-cta" style="color:var(--primary-2);">Build Roadmap →</span>
         </div>
         <div class="feat-card feat-card--teal">
-            <div class="feat-icon"><i class="fa-solid fa-file-circle-check"></i></div>
-            <h4>Career Report PDF</h4>
-            <p>Download a detailed report with roadmap and assessment score.</p>
+            <div class="feat-icon"><i class="fa-solid fa-microphone-lines"></i></div>
+            <div class="feat-tag feat-tag--teal">Feature</div>
+            <h4>Live AI Interview</h4>
+            <p>Face a virtual recruiter "Alex" who adapts questions to your level in real-time.</p>
+            <span class="feat-cta" style="color:var(--teal);">Via Phase 1 →</span>
         </div>
     </div>
-
 </section>
 
-<!-- ================= ASSESSMENT ================= -->
+<!-- ================= PHASE 1: ASSESSMENT ================= -->
 <section id="assessment" class="content-section" style="display:none;">
-
     <div class="container-header">
-        <h2>Skill Assessment</h2>
-        <p>Complete the steps below to discover your best-fit careers.</p>
+        <div class="phase-badge phase-badge--blue"><i class="fa-solid fa-crosshairs"></i> Phase 1</div>
+        <h2>Career Prediction</h2>
+        <p>Enter your subjects and marks to discover your best-fit roles.</p>
     </div>
-
     <div class="assessment-card">
-
-        <!-- Stepper -->
         <div class="stepper">
-            <div class="step active">
-                <div class="step-num">1</div>
-                <span>Branch</span>
-            </div>
+            <div class="step active"><div class="step-num">1</div><span>Branch</span></div>
             <div class="step-line"></div>
-            <div class="step">
-                <div class="step-num">2</div>
-                <span>Skills</span>
-            </div>
+            <div class="step"><div class="step-num">2</div><span>Skills</span></div>
             <div class="step-line"></div>
-            <div class="step">
-                <div class="step-num">3</div>
-                <span>Marks</span>
-            </div>
+            <div class="step"><div class="step-num">3</div><span>Marks</span></div>
         </div>
-
         <!-- STEP 1 -->
         <div id="step-1" class="step-content">
             <h3>Choose Your Department</h3>
             <p class="step-hint">Select your engineering branch to get started.</p>
             <div class="branch-grid">
                 <div class="branch-card branch-cse" onclick="selectBranch('CSE')">
-                    <i class="fa-solid fa-laptop-code dept-icon"></i>
-                    <h4>CSE / AI-ML</h4>
-                    <p>Data Science, Machine Learning & Web</p>
+                    <i class="fa-solid fa-laptop-code dept-icon"></i><h4>CSE / AI-ML</h4><p>Data Science, Machine Learning & Web</p>
                 </div>
                 <div class="branch-card branch-ece" onclick="selectBranch('ECE')">
-                    <i class="fa-solid fa-microchip dept-icon"></i>
-                    <h4>ECE</h4>
-                    <p>VLSI, Embedded Systems & IoT</p>
+                    <i class="fa-solid fa-microchip dept-icon"></i><h4>ECE</h4><p>VLSI, Embedded Systems & IoT</p>
                 </div>
                 <div class="branch-card branch-mech" onclick="selectBranch('MECH')">
-                    <i class="fa-solid fa-gear dept-icon"></i>
-                    <h4>Mechanical</h4>
-                    <p>Robotics, CAD & Manufacturing</p>
+                    <i class="fa-solid fa-gear dept-icon"></i><h4>Mechanical</h4><p>Robotics, CAD & Manufacturing</p>
                 </div>
             </div>
         </div>
-
         <!-- STEP 2 -->
         <div id="step-2" class="step-content" style="display:none;">
             <h3>Select Mastered Subjects</h3>
@@ -170,7 +141,6 @@
                 <button class="btn-primary" onclick="goToStep3()">Next <i class="fa-solid fa-arrow-right"></i></button>
             </div>
         </div>
-
         <!-- STEP 3 -->
         <div id="step-3" class="step-content" style="display:none;">
             <h3>Enter Marks</h3>
@@ -181,21 +151,143 @@
                 <button class="btn-primary" onclick="calculateJobProbability()"><i class="fa-solid fa-chart-line"></i> Analyze</button>
             </div>
         </div>
-
     </div>
 </section>
 
-<!-- ================= RESULTS ================= -->
+<!-- ================= PHASE 1: RESULTS ================= -->
 <section id="resultsPage" class="content-section" style="display:none;">
     <div class="container-header">
+        <div class="phase-badge phase-badge--blue"><i class="fa-solid fa-crosshairs"></i> Phase 1 Results</div>
         <h2>Your Career Matches</h2>
         <p>Based on your mastered skills and academic weightage.</p>
     </div>
-
     <div id="resultsContainer" class="results-grid"></div>
-
     <div class="center-btn">
         <button class="btn-secondary" onclick="location.reload()"><i class="fa-solid fa-rotate"></i> Start New Analysis</button>
+    </div>
+</section>
+
+<!-- ================= PHASE 2: CAREER ROADMAP PLANNER ================= -->
+<section id="phase2" class="content-section" style="display:none;">
+    <div class="container-header">
+        <div class="phase-badge phase-badge--purple"><i class="fa-solid fa-map-location-dot"></i> Phase 2</div>
+        <h2>Career Roadmap Planner</h2>
+        <p>Tell us your dream job and timeline — we'll build your personalised month-by-month plan.</p>
+    </div>
+
+    <div class="assessment-card">
+        <!-- Phase 2 Stepper -->
+        <div class="stepper">
+            <div class="step active" id="p2-dot-1"><div class="step-num">1</div><span>Branch</span></div>
+            <div class="step-line"></div>
+            <div class="step" id="p2-dot-2"><div class="step-num">2</div><span>Dream Job</span></div>
+            <div class="step-line"></div>
+            <div class="step" id="p2-dot-3"><div class="step-num">3</div><span>Timeline</span></div>
+            <div class="step-line"></div>
+            <div class="step" id="p2-dot-4"><div class="step-num">4</div><span>Skills</span></div>
+        </div>
+
+        <!-- P2 STEP 1: Branch -->
+        <div id="p2-step-1" class="step-content">
+            <h3>Choose Your Department</h3>
+            <p class="step-hint">Which engineering branch are you from?</p>
+            <div class="branch-grid">
+                <div class="branch-card branch-cse" onclick="p2SelectBranch('CSE')">
+                    <i class="fa-solid fa-laptop-code dept-icon"></i><h4>CSE / AI-ML</h4><p>Data Science, Machine Learning & Web</p>
+                </div>
+                <div class="branch-card branch-ece" onclick="p2SelectBranch('ECE')">
+                    <i class="fa-solid fa-microchip dept-icon"></i><h4>ECE</h4><p>VLSI, Embedded Systems & IoT</p>
+                </div>
+                <div class="branch-card branch-mech" onclick="p2SelectBranch('MECH')">
+                    <i class="fa-solid fa-gear dept-icon"></i><h4>Mechanical</h4><p>Robotics, CAD & Manufacturing</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- P2 STEP 2: Dream Job -->
+        <div id="p2-step-2" class="step-content" style="display:none;">
+            <h3>Select Your Dream Role</h3>
+            <p id="p2-branch-label" class="badge">Branch: None</p>
+            <p class="step-hint">Choose the career you want to achieve.</p>
+            <div id="p2-job-grid" class="job-card-grid"></div>
+            <div class="flex-btns">
+                <button class="btn-secondary" onclick="p2GoToStep(1)"><i class="fa-solid fa-arrow-left"></i> Back</button>
+            </div>
+        </div>
+
+        <!-- P2 STEP 3: Timeline -->
+        <div id="p2-step-3" class="step-content" style="display:none;">
+            <h3>How Much Time Do You Have?</h3>
+            <p class="step-hint">Select your available preparation time.</p>
+            <div id="p2-selected-job-display" class="selected-job-pill"></div>
+            <div class="timeline-grid">
+                <div class="timeline-card" onclick="p2SelectTime('less than 1 year', this)">
+                    <div class="timeline-icon">⚡</div>
+                    <h4>Less than 1 Year</h4>
+                    <p>Fast-track intensive plan</p>
+                </div>
+                <div class="timeline-card" onclick="p2SelectTime('1 to 2 years', this)">
+                    <div class="timeline-icon">🎯</div>
+                    <h4>1 – 2 Years</h4>
+                    <p>Focused steady progression</p>
+                </div>
+                <div class="timeline-card" onclick="p2SelectTime('2 to 3 years', this)">
+                    <div class="timeline-icon">📈</div>
+                    <h4>2 – 3 Years</h4>
+                    <p>Balanced learning & building</p>
+                </div>
+                <div class="timeline-card" onclick="p2SelectTime('3 to 4 years', this)">
+                    <div class="timeline-icon">🏗️</div>
+                    <h4>3 – 4 Years</h4>
+                    <p>Deep mastery path</p>
+                </div>
+                <div class="timeline-card" onclick="p2SelectTime('more than 4 years', this)">
+                    <div class="timeline-icon">🌟</div>
+                    <h4>More than 4 Years</h4>
+                    <p>Long-term expert journey</p>
+                </div>
+            </div>
+            <div class="flex-btns">
+                <button class="btn-secondary" onclick="p2GoToStep(2)"><i class="fa-solid fa-arrow-left"></i> Back</button>
+            </div>
+        </div>
+
+        <!-- P2 STEP 4: Current Skills -->
+        <div id="p2-step-4" class="step-content" style="display:none;">
+            <h3>What Do You Already Know?</h3>
+            <p class="step-hint">Select skills you already have. We'll build your roadmap around the gaps.</p>
+            <p id="p2-skills-branch-label" class="badge">Branch: None</p>
+            <div id="p2-skills-grid" class="checkbox-grid"></div>
+            <div class="flex-btns">
+                <button class="btn-secondary" onclick="p2GoToStep(3)"><i class="fa-solid fa-arrow-left"></i> Back</button>
+                <button class="btn-primary" onclick="generateCareerRoadmap()">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> Generate My Roadmap
+                </button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ================= PHASE 2: ROADMAP RESULTS ================= -->
+<section id="phase2Results" class="content-section" style="display:none;">
+    <div class="container-header">
+        <div class="phase-badge phase-badge--purple"><i class="fa-solid fa-map-location-dot"></i> Your Roadmap</div>
+        <h2 id="p2ResultTitle">Your Career Roadmap</h2>
+        <p id="p2ResultSubtitle"></p>
+    </div>
+
+    <div id="p2SummaryStrip" class="roadmap-summary-strip"></div>
+    <div id="p2RoadmapContent" class="roadmap-result-card">
+        <div class="loader"><div class="spinner"></div> Building your personalised roadmap...</div>
+    </div>
+
+    <div style="display:flex; justify-content:center; gap:14px; flex-wrap:wrap; margin-top:2rem; margin-bottom:2rem;">
+        <button class="btn-secondary" onclick="startPhase2(); setActiveNav(document.querySelectorAll('.sidebar-nav li')[2])">
+            <i class="fa-solid fa-rotate"></i> New Roadmap
+        </button>
+        <button class="btn-primary" onclick="startAssessment(); setActiveNav(document.querySelectorAll('.sidebar-nav li')[1])">
+            <i class="fa-solid fa-crosshairs"></i> Try Career Predictor
+        </button>
     </div>
 </section>
 
@@ -204,63 +296,40 @@
     <div class="footer-content">
         <p>© 2026 PathFinder AI | Engineering Career Roadmap</p>
         <div class="footer-links">
-            <a href="#">Privacy</a>
-            <a href="#">Terms</a>
-            <a href="#">Support</a>
+            <a href="#">Privacy</a><a href="#">Terms</a><a href="#">Support</a>
         </div>
     </div>
 </footer>
-
 </main>
 
 <!-- ================= MODALS ================= -->
-
 <!-- Interview Modal -->
-<div id="interviewModal" class="modal-box"
-     style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%);
-     z-index:1001; width:90%; max-width:850px; height:85vh;">
-
+<div id="interviewModal" class="modal-box" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); z-index:1001; width:90%; max-width:850px; height:85vh;">
     <div class="modal-header">
         <h3>🎙️ <span id="interviewRoleTitle"></span> Interview</h3>
         <button class="modal-close" onclick="closeInterview()">&times;</button>
     </div>
-
-    <div id="interviewChat"
-         style="flex:1; overflow-y:auto; border:1px solid var(--border); border-radius:16px;
-         padding:15px; margin-bottom:10px; display:flex; flex-direction:column; gap:10px;"></div>
-
+    <div id="interviewChat" style="flex:1; overflow-y:auto; border:1px solid var(--border); border-radius:16px; padding:15px; margin-bottom:10px; display:flex; flex-direction:column; gap:10px;"></div>
     <div>
-        <input id="userInterviewInput" type="text" placeholder="Type your answer..."
-               disabled class="modal-input" style="width:100%; margin-bottom:10px;">
-
+        <input id="userInterviewInput" type="text" placeholder="Type your answer..." disabled class="modal-input" style="width:100%; margin-bottom:10px;">
         <div style="display:flex; gap:10px;">
             <button id="micBtn" class="btn-secondary" onclick="toggleMic()" disabled>🎤</button>
             <button id="sendInterviewBtn" class="btn-primary" onclick="sendInterviewAnswer()" disabled>Send</button>
         </div>
-
-        <button id="startInterviewBtn" class="btn-primary" style="width:100%; margin-top:12px;"
-                onclick="initiateInterview()">Start Interview</button>
+        <button id="startInterviewBtn" class="btn-primary" style="width:100%; margin-top:12px;" onclick="initiateInterview()">Start Interview</button>
     </div>
 </div>
 
 <!-- Assignment Modal -->
-<div id="assignmentModal" class="modal-box"
-     style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%);
-     z-index:1001; width:90%; max-width:700px;">
-
+<div id="assignmentModal" class="modal-box" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); z-index:1001; width:90%; max-width:700px;">
     <div class="modal-header">
         <h3 id="quizRoleTitle"></h3>
         <button class="modal-close" onclick="closeAssignment()">&times;</button>
     </div>
-
-    <div class="quiz-progress-bar-wrap">
-        <div id="quizProgressBar" class="quiz-progress-fill"></div>
-    </div>
-
+    <div class="quiz-progress-bar-wrap"><div id="quizProgressBar" class="quiz-progress-fill"></div></div>
     <p id="questionCountLabel" class="question-count-label"></p>
     <div id="quizContainer"></div>
     <div id="quizFooter" style="display:none;"></div>
-
 </div>
 
 <!-- Report Modal -->
@@ -280,13 +349,8 @@
     </div>
 </div>
 
-<!-- Hidden PDF Template -->
 <div id="pdf-template" style="display:none;"></div>
-
 <div id="modalOverlay" onclick="closeAllModals()"></div>
-
-<!-- JS -->
 <script src="script.js"></script>
-
 </body>
 </html>

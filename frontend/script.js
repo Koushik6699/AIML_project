@@ -49,15 +49,13 @@ function showSection(sectionId) {
     document.querySelectorAll('.content-section').forEach(sec => {
         sec.style.display = 'none';
     });
-
     const target = document.getElementById(sectionId);
-    if (target) {
-        target.style.display = 'block';
-    }
+    if (target) target.style.display = 'block';
+}
 
-    document.querySelectorAll('.sidebar-nav li').forEach(li => {
-        li.classList.remove('active');
-    });
+function setActiveNav(el) {
+    document.querySelectorAll('.sidebar-nav li').forEach(li => li.classList.remove('active'));
+    if (el) el.classList.add('active');
 }
 
 function startAssessment() {
@@ -275,12 +273,18 @@ async function generateRoadmap(role, prob, containerId) {
     const roadmapBox = document.getElementById(containerId);
     const btn = document.getElementById(`btn-${containerId}`);
 
-    const prompt = `
-I am a ${currentBranch} student.
-My mastered subjects are ${selectedSubjects.join(", ")}.
-I have a ${prob}% probability for the role of ${role}.
-Provide a high-impact roadmap with 3 specific technical skills to learn and 3 project ideas, keep very short points and short answer.
-`;
+    const prompt = `I am a ${currentBranch} student. Subjects: ${selectedSubjects.join(", ")}. Match: ${prob}% for ${role}. Give a COMPACT roadmap in this exact format (max 150 words total, one line per point):
+
+**Skills to Learn** (pick 3 most critical):
+• Skill — why
+
+**Projects to Build** (3 ideas):
+• Project name — one sentence
+
+**Quick Tips** (2 tips max):
+• tip
+
+No long paragraphs.`;
 
     roadmapBox.style.display = "block";
     roadmapBox.innerHTML = `<div class="loader"><div class="spinner"></div> Mapping your path...</div>`;
@@ -694,67 +698,528 @@ function closeReportForm() {
 }
 
 function processReportPDF() {
-    const name = document.getElementById('userName').value;
-    const dob = document.getElementById('userDOB').value;
-    const course = document.getElementById('userCourse').value;
+    const name   = document.getElementById('userName').value.trim();
+    const dob    = document.getElementById('userDOB').value.trim();
+    const course = document.getElementById('userCourse').value.trim();
 
-    if (!name || !dob || !course) {
-        alert("Please fill all details");
-        return;
+    if (!name || !dob || !course) { alert("Please fill all details"); return; }
+
+    const score  = window.userScore || 0;
+    const role   = window.currentReportRole || "Unknown";
+    const branch = currentBranch || "N/A";
+    const subjects = selectedSubjects.length > 0 ? selectedSubjects.join(", ") : "N/A";
+
+    let evaluation = "";
+    if (score < 10)      evaluation = "Needs Improvement - Focus on core fundamentals.";
+    else if (score < 15) evaluation = "Good - Solid grasp of concepts.";
+    else if (score < 18) evaluation = "Very Good - Competitive for this role.";
+    else                 evaluation = "Excellent - Industry-ready!";
+
+    const roadmapEl  = document.getElementById(window.currentReportCardId);
+    const roadmapRaw = roadmapEl ? roadmapEl.innerText.trim() : "No roadmap generated.";
+
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ unit: "pt", format: "a4", orientation: "portrait" });
+
+    const pageW    = doc.internal.pageSize.getWidth();
+    const pageH    = doc.internal.pageSize.getHeight();
+    const margin   = 48;
+    const contentW = pageW - margin * 2;
+    let y = 0;
+
+    function checkPage(needed) {
+        if (y + (needed || 20) > pageH - 50) { doc.addPage(); y = margin; }
     }
 
-    // Prepare Score Evaluation
-    let score = window.userScore;
-    let evaluation = "";
-    if (score < 10) evaluation = "Needs Improvement: Focus on core fundamentals.";
-    else if (score < 15) evaluation = "Good: You have a solid grasp of concepts.";
-    else if (score < 18) evaluation = "Very Good: You are competitive for this role.";
-    else evaluation = "Excellent: You are industry-ready!";
+    // HEADER BAR
+    doc.setFillColor(79, 70, 229);
+    doc.rect(0, 0, pageW, 68, "F");
+    doc.setTextColor(255, 255, 255);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(20);
+    doc.text("PathFinder AI", margin, 28);
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(9);
+    doc.text("Career Assessment Report", margin, 46);
+    const dateStr = new Date().toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" });
+    doc.text(dateStr, pageW - margin, 46, { align: "right" });
 
-    const roadmapContent = document.getElementById(window.currentReportCardId).innerHTML;
+    y = 90;
 
-    // Build PDF Content
-    const element = document.getElementById('pdf-template');
-    element.style.display = "block";
-    element.innerHTML = `
-        <h1 style="color:#4f46e5; font-family:sans-serif;">PathFinder AI Career Report</h1>
-        <hr>
-        <p><strong>Name:</strong> ${name} | <strong>DOB:</strong> ${dob}</p>
-        <p><strong>Course:</strong> ${course}</p>
-        <hr>
-        <h2 style="font-family:sans-serif;">Target Role: ${window.currentReportRole}</h2>
-        <div style="background:#f3f4f6; padding: 15px; border-radius:10px;">
-            <h3 style="font-family:sans-serif;">Technical Assignment Score: ${score}/20</h3>
-            <p><strong>Evaluation:</strong> ${evaluation}</p>
-        </div>
-        <h3 style="font-family:sans-serif;">AI Career Roadmap</h3>
-        <div>${roadmapContent}</div>
-        <footer style="margin-top:50px; font-size:10px; color:#666;">Generated by PathFinder AI — 2026</footer>
-    `;
+    // STUDENT PROFILE BOX
+    doc.setFillColor(238, 242, 255);
+    doc.roundedRect(margin, y, contentW, 88, 6, 6, "F");
+    doc.setFillColor(99, 102, 241);
+    doc.rect(margin, y, 4, 88, "F");
 
-    // Convert to PDF
-    const opt = {
-        margin: 0.5,
-        filename: `${name}_PathFinder_Report.pdf`,
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2 },
-        jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
-    };
+    doc.setTextColor(107, 114, 128);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(7.5);
+    doc.text("STUDENT PROFILE", margin + 14, y + 17);
 
-    html2pdf()
-        .set(opt)
-        .from(element)
-        .save()
-        .then(() => {
-        element.style.display = "none";
-        closeReportForm();
+    doc.setFontSize(10.5);
+    doc.setTextColor(31, 41, 55);
+
+    doc.setFont("helvetica", "bold"); doc.text("Name:", margin + 14, y + 34);
+    doc.setFont("helvetica", "normal"); doc.text(name, margin + 52, y + 34);
+
+    doc.setFont("helvetica", "bold"); doc.text("DOB:", margin + 200, y + 34);
+    doc.setFont("helvetica", "normal"); doc.text(dob, margin + 228, y + 34);
+
+    doc.setFont("helvetica", "bold"); doc.text("Course:", margin + 14, y + 52);
+    doc.setFont("helvetica", "normal"); doc.text(course, margin + 58, y + 52);
+
+    doc.setFont("helvetica", "bold"); doc.text("Branch:", margin + 200, y + 52);
+    doc.setFont("helvetica", "normal"); doc.text(branch, margin + 242, y + 52);
+
+    doc.setFont("helvetica", "bold"); doc.text("Subjects:", margin + 14, y + 70);
+    doc.setFont("helvetica", "normal");
+    const subLine = doc.splitTextToSize(subjects, contentW - 80)[0];
+    doc.text(subLine, margin + 64, y + 70);
+
+    y += 104;
+
+    // TARGET ROLE BOX
+    checkPage(60);
+    doc.setFillColor(224, 231, 255);
+    doc.roundedRect(margin, y, contentW, 50, 6, 6, "F");
+    doc.setFillColor(99, 102, 241);
+    doc.rect(margin, y, 4, 50, "F");
+    doc.setTextColor(107, 114, 128);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(7.5);
+    doc.text("TARGET ROLE", margin + 14, y + 16);
+    doc.setTextColor(67, 56, 202);
+    doc.setFontSize(15);
+    doc.setFont("helvetica", "bold");
+    doc.text(role, margin + 14, y + 37);
+
+    y += 66;
+
+    // ASSIGNMENT SCORE BOX
+    checkPage(90);
+    doc.setFillColor(240, 253, 244);
+    doc.roundedRect(margin, y, contentW, 78, 6, 6, "F");
+    doc.setFillColor(16, 185, 129);
+    doc.rect(margin, y, 4, 78, "F");
+    doc.setTextColor(107, 114, 128);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(7.5);
+    doc.text("TECHNICAL ASSIGNMENT RESULT", margin + 14, y + 16);
+
+    doc.setTextColor(5, 150, 105);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(30);
+    doc.text(String(score), margin + 14, y + 52);
+    doc.setTextColor(107, 114, 128);
+    doc.setFontSize(13);
+    doc.text("/ 20", margin + 48, y + 52);
+
+    doc.setTextColor(31, 41, 55);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(10);
+    doc.text(evaluation, margin + 95, y + 38);
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(9);
+    doc.setTextColor(107, 114, 128);
+    doc.text("Score based on technical MCQ assignment", margin + 95, y + 52);
+
+    // Score bar
+    const bX = margin + 95, bY = y + 60, bW = contentW - 106, bH = 7;
+    doc.setFillColor(209, 250, 229);
+    doc.roundedRect(bX, bY, bW, bH, 3, 3, "F");
+    doc.setFillColor(16, 185, 129);
+    doc.roundedRect(bX, bY, bW * (score / 20), bH, 3, 3, "F");
+
+    y += 94;
+
+    // ROADMAP SECTION
+    checkPage(30);
+    doc.setTextColor(107, 114, 128);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(7.5);
+    doc.text("AI CAREER ROADMAP", margin, y + 14);
+    doc.setDrawColor(229, 231, 235);
+    doc.setLineWidth(0.5);
+    doc.line(margin, y + 18, margin + contentW, y + 18);
+    y += 30;
+
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(10);
+    doc.setTextColor(55, 65, 81);
+
+    const roadmapLines = doc.splitTextToSize(roadmapRaw, contentW - 10);
+    roadmapLines.forEach(function(line) {
+        checkPage(16);
+        const trimmed = line.trim();
+        if (trimmed === "") { y += 5; return; }
+        if (trimmed.startsWith("•") || trimmed.startsWith("-") || trimmed.startsWith("*")) {
+            doc.setTextColor(79, 70, 229);
+            doc.text("->", margin, y);
+            doc.setTextColor(55, 65, 81);
+            doc.text(trimmed.replace(/^[•\-\*]\s*/, ""), margin + 18, y);
+        } else if (trimmed === trimmed.toUpperCase() && trimmed.length > 3 && !/\d/.test(trimmed)) {
+            doc.setFont("helvetica", "bold");
+            doc.setTextColor(79, 70, 229);
+            doc.text(line, margin, y);
+            doc.setFont("helvetica", "normal");
+            doc.setTextColor(55, 65, 81);
+        } else {
+            doc.text(line, margin, y);
+        }
+        y += 16;
     });
-}
 
+    // FOOTER on all pages
+    const totalPages = doc.internal.getNumberOfPages();
+    for (let i = 1; i <= totalPages; i++) {
+        doc.setPage(i);
+        doc.setFillColor(249, 250, 251);
+        doc.rect(0, pageH - 30, pageW, 30, "F");
+        doc.setDrawColor(229, 231, 235);
+        doc.setLineWidth(0.5);
+        doc.line(0, pageH - 30, pageW, pageH - 30);
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(8);
+        doc.setTextColor(156, 163, 175);
+        doc.text("(c) 2026 PathFinder AI - Confidential, for personal use only", margin, pageH - 12);
+        doc.text("Page " + i + " of " + totalPages, pageW - margin, pageH - 12, { align: "right" });
+    }
+
+    doc.save(name.replace(/\s+/g, "_") + "_PathFinder_Report.pdf");
+    closeReportForm();
+}
 function closeAllModals() {
     document.getElementById('interviewModal').style.display = 'none';
     document.getElementById('assignmentModal').style.display = 'none';
     document.getElementById('reportFormModal').style.display = 'none';
     document.getElementById('modalOverlay').style.display = 'none';
     synth.cancel(); // Stop AI speaking if modal closes
+}
+
+// =====================================================================
+// PHASE 2 — CAREER ROADMAP PLANNER
+// =====================================================================
+
+// -------- CAREER DATABASE (from careers.json) --------
+const CAREER_DATA = [
+    {
+        id: "software_dev",
+        title: "Software Developer",
+        icon: "💻",
+        description: "Building core systems and applications using logic and high-level languages.",
+        branches: ["CSE"],
+        subject_weights: [
+            { name: "DSA", weight: 10 }, { name: "OOP", weight: 9 },
+            { name: "C++", weight: 8 }, { name: "Java", weight: 8 }, { name: "SQL", weight: 6 }
+        ]
+    },
+    {
+        id: "ml_engineer",
+        title: "Machine Learning Engineer",
+        icon: "🤖",
+        description: "Training intelligent models and working with complex data patterns.",
+        branches: ["CSE"],
+        subject_weights: [
+            { name: "ML", weight: 10 }, { name: "AIML Advanced", weight: 10 },
+            { name: "Python", weight: 9 }, { name: "Stats", weight: 8 }, { name: "DL", weight: 9 }
+        ]
+    },
+    {
+        id: "vlsi_engineer",
+        title: "VLSI Design Engineer",
+        icon: "🔬",
+        description: "Designing and testing integrated circuits and semiconductor devices.",
+        branches: ["ECE"],
+        subject_weights: [
+            { name: "VLSI Design", weight: 10 }, { name: "Digital Electronics", weight: 9 },
+            { name: "Circuit Theory", weight: 8 }, { name: "Microprocessors", weight: 7 }, { name: "Analog Circuits", weight: 8 }
+        ]
+    },
+    {
+        id: "embedded_sys",
+        title: "Embedded Systems Developer",
+        icon: "⚙️",
+        description: "Combining hardware and software for specialized control systems.",
+        branches: ["ECE", "MECH"],
+        subject_weights: [
+            { name: "Embedded Systems", weight: 10 }, { name: "C", weight: 9 },
+            { name: "Microprocessors", weight: 9 }, { name: "IoT", weight: 8 }, { name: "Control Systems", weight: 7 }
+        ]
+    },
+    {
+        id: "robotics_specialist",
+        title: "Robotics & Automation Engineer",
+        icon: "🦾",
+        description: "Creating autonomous systems using mechanical design and AI controllers.",
+        branches: ["MECH", "ECE"],
+        subject_weights: [
+            { name: "Robotics", weight: 10 }, { name: "Mechatronics", weight: 10 },
+            { name: "Control Systems", weight: 8 }, { name: "Python", weight: 7 }, { name: "CAD/CAM", weight: 6 }
+        ]
+    },
+    {
+        id: "iot_architect",
+        title: "IoT Solutions Architect",
+        icon: "📡",
+        description: "Designing networks of connected devices and sensors.",
+        branches: ["ECE", "CSE"],
+        subject_weights: [
+            { name: "IoT", weight: 10 }, { name: "Communication Systems", weight: 9 },
+            { name: "Cloud Computing", weight: 8 }, { name: "Cyber Security", weight: 7 }, { name: "Signal Processing", weight: 7 }
+        ]
+    },
+    {
+        id: "thermal_engineer",
+        title: "Thermal Systems Designer",
+        icon: "🌡️",
+        description: "Analyzing heat transfer and energy conversion in mechanical systems.",
+        branches: ["MECH"],
+        subject_weights: [
+            { name: "Thermodynamics", weight: 10 }, { name: "Heat Transfer", weight: 10 },
+            { name: "Fluid Mechanics", weight: 9 }, { name: "Refrigeration", weight: 8 }, { name: "Automobile Engineering", weight: 6 }
+        ]
+    },
+    {
+        id: "manufacturing_lead",
+        title: "Manufacturing & Operations Manager",
+        icon: "🏭",
+        description: "Optimizing industrial production processes and workflows.",
+        branches: ["MECH"],
+        subject_weights: [
+            { name: "Manufacturing Process", weight: 10 }, { name: "Industrial Engineering", weight: 9 },
+            { name: "CAD/CAM", weight: 8 }, { name: "Solid Mechanics", weight: 7 }, { name: "Kinematics", weight: 6 }
+        ]
+    },
+    {
+        id: "ev_specialist",
+        title: "Electric Vehicle Engineer",
+        icon: "⚡",
+        description: "Developing powertrain and battery systems for modern transport.",
+        branches: ["MECH", "ECE"],
+        subject_weights: [
+            { name: "Automobile Engineering", weight: 10 }, { name: "Analog Circuits", weight: 8 },
+            { name: "Thermodynamics", weight: 8 }, { name: "Control Systems", weight: 9 }, { name: "Embedded Systems", weight: 7 }
+        ]
+    }
+];
+
+// Phase 2 state
+let p2Branch = "";
+let p2SelectedJob = null;
+let p2SelectedTime = "";
+let p2CurrentSkills = [];
+
+// -------- NAVIGATION --------
+function startPhase2() {
+    showSection('phase2');
+    p2GoToStep(1);
+}
+
+function p2GoToStep(stepNum) {
+    [1, 2, 3, 4].forEach(n => {
+        const el = document.getElementById(`p2-step-${n}`);
+        if (el) el.style.display = 'none';
+        const dot = document.getElementById(`p2-dot-${n}`);
+        if (dot) {
+            if (n <= stepNum) dot.classList.add('active');
+            else dot.classList.remove('active');
+        }
+    });
+    const current = document.getElementById(`p2-step-${stepNum}`);
+    if (current) current.style.display = 'block';
+}
+
+// -------- STEP 1: BRANCH --------
+function p2SelectBranch(branch) {
+    p2Branch = branch;
+
+    document.getElementById('p2-branch-label').innerText = `Branch: ${branch}`;
+    document.getElementById('p2-skills-branch-label').innerText = `Branch: ${branch}`;
+
+    // Filter careers by branch
+    const filtered = CAREER_DATA.filter(c => c.branches.includes(branch));
+    const grid = document.getElementById('p2-job-grid');
+    grid.innerHTML = "";
+
+    filtered.forEach(career => {
+        grid.innerHTML += `
+            <div class="job-card" id="jobcard-${career.id}" onclick="p2SelectJob('${career.id}')">
+                <span class="job-card-icon">${career.icon}</span>
+                <h4>${career.title}</h4>
+                <p>${career.description}</p>
+            </div>
+        `;
+    });
+
+    p2SelectedJob = null;
+    p2GoToStep(2);
+}
+
+// -------- STEP 2: JOB SELECTION --------
+function p2SelectJob(jobId) {
+    // Deselect all
+    document.querySelectorAll('.job-card').forEach(c => c.classList.remove('selected'));
+    document.getElementById(`jobcard-${jobId}`).classList.add('selected');
+    p2SelectedJob = CAREER_DATA.find(c => c.id === jobId);
+
+    // Show selected pill on next step
+    setTimeout(() => {
+        const pill = document.getElementById('p2-selected-job-display');
+        if (pill) pill.innerHTML = `${p2SelectedJob.icon} ${p2SelectedJob.title}`;
+        p2GoToStep(3);
+    }, 200);
+}
+
+// -------- STEP 3: TIMELINE --------
+function p2SelectTime(time, el) {
+    document.querySelectorAll('.timeline-card').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+    p2SelectedTime = time;
+
+    // Load skills grid for Step 4
+    const grid = document.getElementById('p2-skills-grid');
+    grid.innerHTML = "";
+    BRANCH_DATA[p2Branch].forEach(sub => {
+        grid.innerHTML += `
+            <label class="chip">
+                <input type="checkbox" class="p2-skill-check" value="${sub}" onchange="updateP2Skills()">
+                <span>${sub}</span>
+            </label>
+        `;
+    });
+    p2CurrentSkills = [];
+
+    setTimeout(() => p2GoToStep(4), 200);
+}
+
+function updateP2Skills() {
+    p2CurrentSkills = [...document.querySelectorAll('.p2-skill-check:checked')].map(el => el.value);
+}
+
+// -------- STEP 4: GENERATE ROADMAP --------
+async function generateCareerRoadmap() {
+    if (!p2SelectedJob) { alert("Please select a dream role."); return; }
+    if (!p2SelectedTime) { alert("Please select your timeline."); return; }
+
+    // Figure out what skills they need but don't have
+    const requiredSkills = p2SelectedJob.subject_weights.map(s => s.name);
+    const missingSkills = requiredSkills.filter(s => !p2CurrentSkills.includes(s));
+    const hasSkills = requiredSkills.filter(s => p2CurrentSkills.includes(s));
+
+    // Show results section immediately with loader
+    showSection('phase2Results');
+    document.getElementById('p2ResultTitle').innerText = `Roadmap → ${p2SelectedJob.title}`;
+    document.getElementById('p2ResultSubtitle').innerText = `Personalised ${p2SelectedTime} plan for a ${p2Branch} student.`;
+
+    // Summary strip
+    document.getElementById('p2SummaryStrip').innerHTML = `
+        <div class="summary-chip"><i class="fa-solid fa-user-graduate"></i> ${p2Branch} Branch</div>
+        <div class="summary-chip"><i class="fa-solid fa-bullseye"></i> ${p2SelectedJob.title}</div>
+        <div class="summary-chip"><i class="fa-solid fa-clock"></i> ${p2SelectedTime}</div>
+        <div class="summary-chip"><i class="fa-solid fa-circle-check"></i> ${hasSkills.length} skills known</div>
+        <div class="summary-chip"><i class="fa-solid fa-fire"></i> ${missingSkills.length} skills to build</div>
+    `;
+
+    const content = document.getElementById('p2RoadmapContent');
+    content.innerHTML = `<div class="loader"><div class="spinner"></div> Building your personalised roadmap with AI...</div>`;
+
+    const prompt = `
+You are a senior career counsellor. Create a detailed, actionable, month-by-month career roadmap.
+
+Student Profile:
+- Branch: ${p2Branch}
+- Dream Role: ${p2SelectedJob.title} (${p2SelectedJob.description})
+- Time Available: ${p2SelectedTime}
+- Skills Already Known: ${p2CurrentSkills.length > 0 ? p2CurrentSkills.join(", ") : "None yet"}
+- Skills to Develop: ${missingSkills.join(", ")}
+- Key skills needed for this role: ${requiredSkills.join(", ")}
+
+Your response MUST follow this EXACT structure:
+
+**SKILLS TO DEVELOP**
+List the specific technical skills this student must learn, marking which ones they already have vs need to learn.
+
+**MONTH-BY-MONTH ROADMAP**
+Break down the ${p2SelectedTime} into months (e.g. Month 1, Month 2, etc.). For each month write:
+- Focus: [main topic/skill for that month]
+- Learn: [specific courses, concepts, or tools to study]
+- Build: [one mini project or practical task to do]
+
+**PROJECTS TO BUILD**
+List 3-5 projects (with names and short descriptions) that will make their portfolio strong for ${p2SelectedJob.title}.
+
+**FINAL MILESTONE**
+A short summary of what they should be able to achieve by the end of the timeline.
+
+Keep responses concise and action-oriented. No fluff.
+`;
+
+    try {
+        const response = await fetch(`${BACKEND_BASE_URL}/chat`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ prompt: prompt, role: p2SelectedJob.title })
+        });
+
+        if (!response.ok) throw new Error(`Backend error: ${response.status}`);
+
+        const data = await response.json();
+        if (!data.advice) throw new Error("Empty AI response");
+
+        // Format the roadmap nicely
+        content.innerHTML = formatRoadmapHTML(data.advice, hasSkills, missingSkills);
+
+    } catch (error) {
+        console.error("Roadmap error:", error);
+        content.innerHTML = `
+            <div style="color:var(--danger); padding:20px;">
+                <strong>Error:</strong> ${error.message}
+                <br><br>
+                <button class="btn-primary" onclick="generateCareerRoadmap()">Retry</button>
+            </div>
+        `;
+    }
+}
+
+// -------- FORMAT ROADMAP HTML --------
+function formatRoadmapHTML(raw, hasSkills, missingSkills) {
+    let html = raw
+        // Section titles
+        .replace(/\*\*SKILLS TO DEVELOP\*\*/gi, `<div class="roadmap-section-title"><i class="fa-solid fa-dumbbell"></i> Skills to Develop</div>`)
+        .replace(/\*\*MONTH-BY-MONTH ROADMAP\*\*/gi, `<div class="roadmap-section-title"><i class="fa-solid fa-calendar-days"></i> Month-by-Month Roadmap</div>`)
+        .replace(/\*\*PROJECTS TO BUILD\*\*/gi, `<div class="roadmap-section-title"><i class="fa-solid fa-hammer"></i> Projects to Build</div>`)
+        .replace(/\*\*FINAL MILESTONE\*\*/gi, `<div class="roadmap-section-title"><i class="fa-solid fa-flag-checkered"></i> Final Milestone</div>`)
+
+        // Month headings
+        .replace(/\*\*Month (\d+)[:\-]?\*\*/gi, (_, n) =>
+            `<div class="month-block"><div class="month-label">📅 Month ${n}</div>`)
+
+        // Bold
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+
+        // Bullet points
+        .replace(/^\* (.+)$/gm, '<div style="padding:3px 0 3px 14px; border-left:2px solid var(--border);">• $1</div>')
+        .replace(/^- (.+)$/gm, '<div style="padding:3px 0 3px 14px; border-left:2px solid var(--border);">• $1</div>')
+
+        // Line breaks
+        .replace(/\n\n/g, '</div><br>')
+        .replace(/\n/g, '<br>');
+
+    // Known skills chips
+    if (hasSkills.length > 0) {
+        const chipsHTML = hasSkills.map(s => `<span class="skill-chip">${s} ✓</span>`).join('');
+        const newChipsHTML = missingSkills.map(s => `<span class="skill-chip new">${s} ← learn</span>`).join('');
+        html = `
+            <div style="margin-bottom:20px;">
+                <div style="font-size:0.78rem; color:var(--text-muted); font-weight:700; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:8px;">You already know</div>
+                <div class="skill-chips-row">${chipsHTML}</div>
+                <div style="font-size:0.78rem; color:var(--text-muted); font-weight:700; text-transform:uppercase; letter-spacing:0.5px; margin:12px 0 8px;">Skills to build</div>
+                <div class="skill-chips-row">${newChipsHTML}</div>
+            </div>
+            <hr style="border:none; border-top:1px solid var(--border); margin:20px 0;">
+        ` + html;
+    }
+
+    return html;
 }

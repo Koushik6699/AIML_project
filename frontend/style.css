@@ -1093,3 +1093,315 @@ h1, h2, h3, h4, h5 {
     .hero-cta-row { flex-direction: column; align-items: flex-start; gap: 1.2rem; }
     .action-btns button { min-width: 100%; }
 }
+
+/* ===================== PHASE BADGES ===================== */
+.phase-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+}
+.phase-badge--blue { background: rgba(79,70,229,0.1); color: #4f46e5; border: 1px solid rgba(79,70,229,0.2); }
+.phase-badge--purple { background: rgba(124,58,237,0.1); color: #7c3aed; border: 1px solid rgba(124,58,237,0.2); }
+
+/* ===================== HERO OUTLINE BUTTON ===================== */
+.btn-outline {
+    background: transparent;
+    border: 2px solid rgba(255,255,255,0.6);
+    color: var(--text-main);
+    padding: 13px 28px;
+    border-radius: 14px;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 1rem;
+    font-family: 'DM Sans', sans-serif;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.25s ease;
+    backdrop-filter: blur(4px);
+}
+.btn-outline:hover {
+    background: rgba(124,58,237,0.1);
+    border-color: var(--primary-2);
+    color: var(--primary-2);
+    transform: translateY(-2px);
+}
+
+/* ===================== FEAT CARD EXTRAS ===================== */
+.feat-tag {
+    display: inline-block;
+    font-size: 0.68rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    background: rgba(79,70,229,0.1);
+    color: #4f46e5;
+    margin-bottom: 10px;
+}
+.feat-tag--purple { background: rgba(124,58,237,0.1); color: #7c3aed; }
+.feat-tag--teal { background: rgba(14,165,233,0.1); color: #0ea5e9; }
+.feat-cta {
+    display: block;
+    margin-top: 14px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #4f46e5;
+    letter-spacing: 0.3px;
+}
+
+/* ===================== PHASE 2 JOB CARDS ===================== */
+.job-card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 14px;
+    margin: 20px 0;
+}
+
+.job-card {
+    background: var(--card-2);
+    border: 2px solid var(--border);
+    border-radius: 16px;
+    padding: 20px 16px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    text-align: left;
+    position: relative;
+    overflow: hidden;
+}
+
+.job-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--gradient-btn);
+    opacity: 0;
+    transition: opacity 0.25s;
+}
+
+.job-card:hover { transform: translateY(-4px); border-color: var(--primary); box-shadow: var(--shadow-md); }
+.job-card:hover::before { opacity: 1; }
+.job-card.selected { border-color: var(--primary-2); background: rgba(124,58,237,0.06); box-shadow: 0 0 0 3px rgba(124,58,237,0.15); }
+.job-card.selected::before { opacity: 1; background: linear-gradient(90deg, #7c3aed, #a855f7); }
+
+.job-card-icon {
+    font-size: 1.6rem;
+    margin-bottom: 10px;
+    display: block;
+}
+
+.job-card h4 {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 800;
+    margin-bottom: 6px;
+    color: var(--text-main);
+    line-height: 1.3;
+}
+
+.job-card p {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+}
+
+/* ===================== PHASE 2 TIMELINE CARDS ===================== */
+.timeline-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
+    gap: 14px;
+    margin: 20px 0;
+}
+
+.timeline-card {
+    background: var(--card-2);
+    border: 2px solid var(--border);
+    border-radius: 16px;
+    padding: 22px 16px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    text-align: center;
+}
+
+.timeline-card:hover { transform: translateY(-4px); border-color: var(--teal); box-shadow: 0 8px 24px rgba(14,165,233,0.2); }
+.timeline-card.selected { border-color: var(--teal); background: rgba(14,165,233,0.07); box-shadow: 0 0 0 3px rgba(14,165,233,0.15); }
+
+.timeline-icon { font-size: 2rem; margin-bottom: 10px; }
+
+.timeline-card h4 {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 800;
+    color: var(--text-main);
+    margin-bottom: 6px;
+}
+
+.timeline-card p { font-size: 0.75rem; color: var(--text-muted); }
+
+/* ===================== SELECTED JOB PILL ===================== */
+.selected-job-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(124,58,237,0.1);
+    border: 1px solid rgba(124,58,237,0.25);
+    color: #7c3aed;
+    padding: 8px 16px;
+    border-radius: 30px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+/* ===================== ROADMAP SUMMARY STRIP ===================== */
+.roadmap-summary-strip {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+}
+
+.summary-chip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 10px 16px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text-main);
+    box-shadow: var(--shadow-sm);
+}
+
+.summary-chip i { color: var(--primary); font-size: 0.9rem; }
+
+/* ===================== ROADMAP RESULT CARD ===================== */
+.roadmap-result-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 36px;
+    box-shadow: var(--shadow-md);
+    line-height: 1.75;
+    color: var(--text-main);
+    font-size: 0.92rem;
+}
+
+/* Month timeline blocks */
+.month-block {
+    border-left: 3px solid var(--primary);
+    padding: 16px 20px;
+    margin-bottom: 18px;
+    border-radius: 0 14px 14px 0;
+    background: var(--card-2);
+    position: relative;
+    transition: border-color 0.2s;
+}
+
+.month-block:hover { border-color: var(--primary-2); }
+
+.month-block::before {
+    content: '';
+    position: absolute;
+    left: -8px;
+    top: 20px;
+    width: 13px;
+    height: 13px;
+    border-radius: 50%;
+    background: var(--primary);
+    border: 2px solid var(--card);
+}
+
+.month-label {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--primary);
+    margin-bottom: 8px;
+}
+
+.roadmap-section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: var(--text-main);
+    margin: 24px 0 14px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Skills to develop chips */
+.skill-chips-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 10px 0;
+}
+
+.skill-chip {
+    background: rgba(79,70,229,0.1);
+    color: var(--primary);
+    border: 1px solid rgba(79,70,229,0.2);
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    font-weight: 700;
+}
+
+.skill-chip.new { background: rgba(16,185,129,0.1); color: #059669; border-color: rgba(16,185,129,0.2); }
+
+/* Project cards inside roadmap */
+.project-mini-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.project-mini-card .proj-num {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    background: var(--gradient-btn);
+    color: white;
+    font-size: 0.78rem;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-family: 'Syne', sans-serif;
+}
+
+.project-mini-card p { font-size: 0.85rem; color: var(--text-main); line-height: 1.5; margin: 0; }
+
+/* Roadmap formatted content */
+.roadmap-result-card strong { color: var(--primary); }
+.roadmap-result-card br + br { display: block; content: ''; margin-top: 6px; }
+
+/* ===================== RESPONSIVE PHASE 2 ===================== */
+@media (max-width: 640px) {
+    .job-card-grid { grid-template-columns: 1fr 1fr; }
+    .timeline-grid { grid-template-columns: 1fr 1fr; }
+    .roadmap-result-card { padding: 20px 16px; }
+}
